@@ -7,9 +7,13 @@
 
 # testing
 /coverage
+/src/__tests__/__snapshots__
 
 # production
 /build
+.firebaserc
+.firebase.json
+/src/firebase.js
 
 # misc
 .DS_Store

@@ -1,0 +1,13 @@
+export const NEXT_STEP = "NEXT_STEP";
+export const PREVIOUS_STEP = "PREVIOUS_STEP";
+export const LOGIN_FAIL = "LOGIN_FAIL";
+export const SET_USER = "SET_USER";
+export const CLEAN_USER = "CLEAN_USER";
+export const STAGE_USER_SUCCESS = "STAGE_USER_SUCCESS";
+export const STAGE_USER_FAIL = "STAGE_USER_FAIL";
+export const STAGE_USER = "STAGE_USER";
+export const STAGE_SERVICE = "STAGE_SERVICE";
+export const ADD_USER_SUCCESS = "ADD_USER_SUCCESS";
+export const ADD_USER_FAIL = "ADD_USER_FAIL";
+export const DELETE_INCOMPLETE_FAIL = "DELETE_INCOMPLETE_FAIL";
+export const GEOLOCATE_FAIL = "GEOLOCATE_FAIL";
