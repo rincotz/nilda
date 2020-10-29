@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import Box from "@material-ui/core/Box";
-import FormIntro from "./components/FormIntro";
 import PhotoCameraIcon from "@material-ui/icons/PhotoCamera";
+import Avatar from "@material-ui/core/Avatar";
 
 const useStyles = makeStyles((theme) => ({
   input: {
@@ -11,6 +11,10 @@ const useStyles = makeStyles((theme) => ({
   },
   nextButton: {
     marginTop: theme.spacing(2),
+  },
+  avatar: {
+    width: theme.spacing(8),
+    height: theme.spacing(8),
   },
 }));
 
@@ -25,13 +29,25 @@ export const ProfilePicStep = (props) => {
       justifyContent={"center"}
       alignItems={"center"}
     >
-      <FormIntro
-        icon={<PhotoCameraIcon style={{ fontSize: "40px" }} />}
-        title={"Foto"}
-        text={
-          "Uma foto ajuda você e sua diarista a se reconhecerem quando se encontrarem. Após adicionar a foto, clique em avançar."
-        }
-      />
+      <Box fontSize={"h4.fontSize"} mt={3} textAlign={"center"}>
+        Foto
+      </Box>
+      <Box fontSize={"body.fontSize"} mt={1} mb={3} textAlign={"center"}>
+        Uma foto ajuda você e sua diarista a se reconhecerem quando se
+        encontrarem. Após adicionar a foto, clique em avançar.
+      </Box>
+      <Box mb={3}>
+        <Avatar
+          className={classes.avatar}
+          src={props.user.foto ? props.user.foto : ""}
+        >
+          {props.user.foto ? (
+            ""
+          ) : (
+            <PhotoCameraIcon style={{ fontSize: "40px" }} />
+          )}
+        </Avatar>
+      </Box>
       <input
         type="file"
         className={classes.input}

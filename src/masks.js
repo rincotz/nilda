@@ -1,10 +1,10 @@
-import React from 'react'
-import MaskedInput from "react-text-mask"
+import React from "react";
+import MaskedInput from "react-text-mask";
 
 const BirthInput = ({ inputRef, ...props }) => (
   <MaskedInput
     {...props}
-    ref={ref => {
+    ref={(ref) => {
       inputRef(ref ? ref.inputElement : null);
     }}
     mask={[/[0-9]/, /\d/, "/", /[0-9]/, /\d/, "/", /[0-9]/, /\d/, /\d/, /\d/]}
@@ -14,7 +14,7 @@ const BirthInput = ({ inputRef, ...props }) => (
 const PhoneInput = ({ inputRef, ...props }) => (
   <MaskedInput
     {...props}
-    ref={ref => {
+    ref={(ref) => {
       inputRef(ref ? ref.inputElement : null);
     }}
     mask={[
@@ -33,7 +33,7 @@ const PhoneInput = ({ inputRef, ...props }) => (
       " ",
       /\d/,
       /\d/,
-      /\d/
+      /\d/,
     ]}
   />
 );
@@ -41,7 +41,7 @@ const PhoneInput = ({ inputRef, ...props }) => (
 const IdInput = ({ inputRef, ...props }) => (
   <MaskedInput
     {...props}
-    ref={ref => {
+    ref={(ref) => {
       inputRef(ref ? ref.inputElement : null);
     }}
     mask={[
@@ -58,7 +58,7 @@ const IdInput = ({ inputRef, ...props }) => (
       /\d/,
       "-",
       /[0-9]/,
-      /\d/
+      /\d/,
     ]}
   />
 );
@@ -66,7 +66,7 @@ const IdInput = ({ inputRef, ...props }) => (
 const CnpjInput = ({ inputRef, ...props }) => (
   <MaskedInput
     {...props}
-    ref={ref => {
+    ref={(ref) => {
       inputRef(ref ? ref.inputElement : null);
     }}
     mask={[
@@ -87,7 +87,7 @@ const CnpjInput = ({ inputRef, ...props }) => (
       /\d/,
       "-",
       /[0-9]/,
-      /\d/
+      /\d/,
     ]}
   />
 );
@@ -95,21 +95,39 @@ const CnpjInput = ({ inputRef, ...props }) => (
 const PriceInput = ({ inputRef, ...props }) => (
   <MaskedInput
     {...props}
-    ref={ref => {
+    ref={(ref) => {
       inputRef(ref ? ref.inputElement : null);
     }}
     mask={[/[1-9]/, /\d/, /\d/]}
   />
 );
 
+const agencyInput = ({ inputRef, ...props }) => (
+  <MaskedInput
+    {...props}
+    ref={(ref) => {
+      inputRef(ref ? ref.inputElement : null);
+    }}
+    mask={[/\d/, /\d/, /\d/, /\d/, "-", /\d/]}
+  />
+);
+
 const ZipInput = ({ inputRef, ...props }) => (
   <MaskedInput
     {...props}
-    ref={ref => {
+    ref={(ref) => {
       inputRef(ref ? ref.inputElement : null);
     }}
     mask={[/[0-9]/, /\d/, /[0-9]/, /\d/, /\d/, "-", /[0-9]/, /\d/, /\d/]}
   />
 );
 
-export { PhoneInput, CnpjInput, BirthInput, IdInput, PriceInput, ZipInput };
+export {
+  PhoneInput,
+  CnpjInput,
+  BirthInput,
+  IdInput,
+  PriceInput,
+  agencyInput,
+  ZipInput,
+};

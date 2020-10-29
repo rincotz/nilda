@@ -11,20 +11,19 @@ import {
   aceitarDiarista,
   stageService,
 } from "../actions";
-import { makeStyles } from "@material-ui/core/styles";
-import MobileStepper from "@material-ui/core/MobileStepper";
-import Button from "@material-ui/core/Button";
-import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
-import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import WelcomeHirer from "./welcomeHirer";
 import PhoneStep from "../PhoneStep";
 import PersonalInfoStep from "../PersonalInfoStep";
 import ProfilePic from "../ProfilePicStep";
 import AddressStep from "../AddressStep";
-import HirerStep from "../HirerStep";
-import ServiceCardList from "../ServiceCardList";
+import { makeStyles } from "@material-ui/core/styles";
+import MobileStepper from "@material-ui/core/MobileStepper";
+import Button from "@material-ui/core/Button";
+import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
+import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import Box from "@material-ui/core/Box";
 import Grid from "@material-ui/core/Grid";
+import HirerStep from "../HirerStep";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -43,7 +42,6 @@ export const ContratarForm = (props) => {
     <ProfilePic {...props} />,
     <AddressStep {...props} />,
     <HirerStep {...props} />,
-    <ServiceCardList {...props} />,
   ];
   const nextButton = (
     <Button size="small" onClick={() => props.nextStep()}>
@@ -103,22 +101,5 @@ const mapStateToProps = (state) => ({
   user: state.user,
   service: state.service,
 });
-
-// ModalStepper.propTypes = {
-//   close: PropTypes.func.isRequired,
-//   open: PropTypes.bool.isRequired,
-//   step: PropTypes.number.isRequired,
-//   nextStep: PropTypes.func.isRequired,
-//   previousStep: PropTypes.func.isRequired,
-//   addGeopoint: PropTypes.func.isRequired,
-//   addHirer: PropTypes.func.isRequired,
-//   addPic: PropTypes.func.isRequired,
-//   addWorker: PropTypes.func.isRequired,
-//   getWorkers: PropTypes.func.isRequired,
-//   stageUser: PropTypes.func.isRequired,
-//   user: PropTypes.shape({
-//     uid: PropTypes.string
-//   }).isRequired,
-// }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ContratarForm);

@@ -1,10 +1,12 @@
-import React, { Fragment, useState } from "react";
+import React, { useState } from "react";
 import FormIntro from "./components/FormIntro";
 import { ZipInput } from "./masks";
 import validator from "./validator";
-import Select from "@material-ui/core/Select";
 import TextField from "@material-ui/core/TextField";
+import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
+import FormControl from "@material-ui/core/FormControl";
+import InputLabel from "@material-ui/core/InputLabel";
 import Button from "@material-ui/core/Button";
 import Box from "@material-ui/core/Box";
 import List from "@material-ui/core/List";
@@ -41,7 +43,6 @@ export const AddressStep = (props) => {
     }
   };
   const estados = [
-    [0, "Selecione um estado"],
     ["AC", "Acre"],
     ["AL", "Alagoas"],
     ["AM", "Amazonas"],
@@ -72,7 +73,7 @@ export const AddressStep = (props) => {
   ];
 
   const cidades = {
-    0: [""],
+    0: ["Selecione o estado"],
     AC: [
       "Rio Branco",
       "Acrelândia",
@@ -5704,40 +5705,48 @@ export const AddressStep = (props) => {
         icon={<LocationIcon style={{ fontSize: "45px" }} />}
         title={"Endereço"}
         text={
-          "Seu endereço será compartilhado somente com a diarista que irá realizar o serviço"
+          props.atividade === "contratante"
+            ? "Seu endereço será compartilhado somente com a diarista que irá realizar o serviço"
+            : "Seu endereço não será compartilhado com outros usuários. Ele será utilizado para mostrar as diárias mais próximas de você"
         }
       />
       <List component={"form"}>
         <ListItem>
-          <TextField
-            error={!!validator.rua(state.logradouro)}
-            helperText={validator.rua(state.logradouro)}
-            variant="outlined"
-            onChange={(e) => onChange(e)}
-            name="logradouro"
-            label="rua"
-            value={state.logradouro || ""}
-          />
+          <FormControl>
+            <TextField
+              error={!!validator.rua(state.logradouro)}
+              helperText={validator.rua(state.logradouro)}
+              variant="outlined"
+              onChange={(e) => onChange(e)}
+              name="logradouro"
+              label="rua"
+              value={state.logradouro || ""}
+            />
+          </FormControl>
         </ListItem>
         <ListItem>
-          <TextField
-            error={!!validator.numero(state.numero)}
-            helperText={validator.numero(state.numero)}
-            variant="outlined"
-            onChange={(e) => onChange(e)}
-            name="numero"
-            label="número"
-            value={state.numero || ""}
-          />
+          <FormControl>
+            <TextField
+              error={!!validator.numero(state.numero)}
+              helperText={validator.numero(state.numero)}
+              variant="outlined"
+              onChange={(e) => onChange(e)}
+              name="numero"
+              label="número"
+              value={state.numero || ""}
+            />
+          </FormControl>
         </ListItem>
         <ListItem>
-          <TextField
-            variant="outlined"
-            onChange={(e) => onChange(e)}
-            name="complemento"
-            label="complemento"
-            value={state.complemento || ""}
-          />
+          <FormControl>
+            <TextField
+              variant="outlined"
+              onChange={(e) => onChange(e)}
+              name="complemento"
+              label="complemento"
+              value={state.complemento || ""}
+            />
+          </FormControl>
         </ListItem>
         <ListItem>
           <TextField
@@ -5751,61 +5760,77 @@ export const AddressStep = (props) => {
           />
         </ListItem>
         <ListItem>
-          <TextField
-            error={!!validator.cep(state.cep)}
-            helperText={validator.cep(state.cep)}
-            variant="outlined"
-            onChange={(e) => onChange(e)}
-            name="cep"
-            label="cep"
-            value={state.cep || ""}
-            InputProps={{ inputComponent: ZipInput }}
-          />
+          <FormControl>
+            <TextField
+              error={!!validator.cep(state.cep)}
+              helperText={validator.cep(state.cep)}
+              variant="outlined"
+              onChange={(e) => onChange(e)}
+              name="cep"
+              label="cep"
+              value={state.cep || ""}
+              InputProps={{ inputComponent: ZipInput }}
+            />
+          </FormControl>
         </ListItem>
         <ListItem>
-          <TextField
-            select
-            variant="outlined"
-            onChange={(e) => onChange(e)}
-            name="estado"
-            label="estado"
-            value={state.estado || ""}
-          >
-            {estados.map((estado, index) => (
-              <MenuItem key={index} value={estado[0]}>
-                {estado[1]}
+          <FormControl>
+            <InputLabel shrink htmlFor={"estado"}>
+              estado
+            </InputLabel>
+            <Select
+              variant="outlined"
+              onChange={(e) => onChange(e)}
+              name="estado"
+              label="estado"
+              value={state.estado || ""}
+              style={{ minWidth: 210 }}
+            >
+              <MenuItem disabled value={0}>
+                Selecione um estado:
               </MenuItem>
-            ))}
-          </TextField>
+              {estados.map((estado, index) => (
+                <MenuItem key={index} value={estado[0]}>
+                  {estado[1]}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         </ListItem>
         <ListItem>
-          <TextField
-            select
-            disabled={state.estado === 0}
-            variant="outlined"
-            onChange={(e) => onChange(e)}
-            name="cidade"
-            label="cidade"
-            value={state.cidade || ""}
-          >
-            {cidades[state.estado].map((cidade, index) => (
-              <MenuItem key={index} value={cidade}>
-                {cidade}
+          <FormControl>
+            <InputLabel shrink htmlFor={"estado"}>
+              cidade
+            </InputLabel>
+            <Select
+              disabled={state.estado === 0}
+              variant="outlined"
+              onChange={(e) => onChange(e)}
+              name="cidade"
+              label="cidade"
+              value={state.cidade || ""}
+              style={{ minWidth: 210 }}
+            >
+              <MenuItem disabled value="">
+                Selecione uma cidade:
               </MenuItem>
-            ))}
-          </TextField>
-        </ListItem>
-        <ListItem>
-          <Button
-            disabled={!formComplete}
-            variant="contained"
-            color={"primary"}
-            onClick={() => send()}
-          >
-            avançar
-          </Button>
+              {cidades[state.estado].map((cidade, index) => (
+                <MenuItem key={index} value={cidade}>
+                  {cidade}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         </ListItem>
       </List>
+      <Button
+        disabled={!formComplete}
+        variant="contained"
+        color={"primary"}
+        onClick={() => send()}
+      >
+        avançar
+      </Button>
     </Box>
   );
 };

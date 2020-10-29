@@ -11,9 +11,11 @@ import ListItemText from "@material-ui/core/ListItemText";
 import ListItemAvatar from "@material-ui/core/ListItemAvatar";
 import Avatar from "@material-ui/core/Avatar";
 import MenuIcon from "@material-ui/icons/Menu";
-import AccountCircle from "@material-ui/icons/AccountCircle";
-import Work from "@material-ui/icons/Work";
-import Error from "@material-ui/icons/Error";
+import AccountCircleIcon from "@material-ui/icons/AccountCircle";
+import WorkIcon from "@material-ui/icons/Work";
+import ErrorIcon from "@material-ui/icons/Error";
+import BeachIcon from "@material-ui/icons/BeachAccess";
+import HomeIcon from "@material-ui/icons/Home";
 import { makeStyles } from "@material-ui/styles";
 
 const useStyles = makeStyles((theme) => ({
@@ -24,6 +26,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default ({ user }) => {
+  const nome = user.displayName ? user.displayName.split(" ")[1] : "";
+  const atividade = user.displayName ? user.displayName.split(" ")[0] : "";
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   return (
@@ -50,32 +54,36 @@ export default ({ user }) => {
               </ListItemAvatar>
             </ListItem>
             <ListItem>
-              <ListItemText
-                primary={
-                  user.displayName
-                    ? user.displayName.split(" ")[2]
-                    : "Visitante"
-                }
-              />
+              <ListItemText primary={user.displayName ? nome : "Visitante"} />
             </ListItem>
           </List>
           <Divider />
           <List>
             <ListItem button component={Link} to={"/editar"}>
               <ListItemIcon>
-                <AccountCircle color={"primary"} />
+                <AccountCircleIcon color={"primary"} />
               </ListItemIcon>
               <ListItemText primary={"Atualizar Cadastro"} />
             </ListItem>
             <ListItem button component={Link} to={"/diarias"}>
               <ListItemIcon>
-                <Work color={"primary"} />
+                {atividade === "diarista" ? (
+                  <WorkIcon color={"primary"} />
+                ) : (
+                  <HomeIcon color={"primary"} />
+                )}
               </ListItemIcon>
               <ListItemText primary={"Diárias"} />
             </ListItem>
+            <ListItem button component={Link} to={"/beneficios"}>
+              <ListItemIcon>
+                <BeachIcon color={"primary"} />
+              </ListItemIcon>
+              <ListItemText primary={"Benefícios"} />
+            </ListItem>
             <ListItem button component={Link} to={"/ocorrencias"}>
               <ListItemIcon>
-                <Error color={"primary"} />
+                <ErrorIcon color={"primary"} />
               </ListItemIcon>
               <ListItemText primary={"Ocorrências"} />
             </ListItem>
