@@ -4,15 +4,17 @@ import Home from "./pages/home";
 import Mais from "./pages/mais";
 import ContratarForm from "./pages/contratar";
 import TrabalharForm from "./pages/trabalhar";
-import WaitingStep from "./WaitingStep";
-import MeiStep from "./MeiStep";
-import AddressStep from "./AddressStep";
+import WorkerCard from "./components/WorkerCard";
+import { hirer, worker } from "./__tests__/people";
+import DayCard from "./components/DayCard";
+import FindWorkers from "./FindWorkers";
+import ProfilePicStep from "./ProfilePicStep";
 
-const testComponent = () => <AddressStep user={""} />;
+const testComponent = () => <FindWorkers user={hirer} />;
 
 export default () => (
   <BrowserRouter>
-    <div>
+    <Switch>
       <Route path={"/"} component={Home} exact={true} />
       <Route path={"/mais"} component={Mais} />
       <Route path={"/contratar"} component={ContratarForm} />
@@ -22,6 +24,6 @@ export default () => (
       <Route path={"/beneficios"} component={Mais} />
       <Route path={"/ocorrencias"} component={Mais} />
       <Route path={"/test"} component={testComponent} />
-    </div>
+    </Switch>
   </BrowserRouter>
 );

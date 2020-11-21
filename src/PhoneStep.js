@@ -24,12 +24,15 @@ export const PhoneStep = (props) => {
             callbacks: {
               signInSuccessWithAuthResult: (authResult, redirectUrl) => {
                 if (authResult.user.email) {
-                  return props.close;
+                  return props.history.push("/");
                 } else {
                   props.nextStep();
                   props.stageUser({
                     uid: authResult.user.uid,
-                    telefone: authResult.user.phoneNumber,
+                    pessoais: {
+                      telefone: authResult.user.phoneNumber,
+                    },
+                    atividade: props.atividade,
                   });
                 }
               },

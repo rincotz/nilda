@@ -53,9 +53,26 @@ export const PersonalInfoStep = (props) => {
     !validator.email(state.email) &&
     state.senha &&
     !validator.senha(state.senha);
+  const normalizeData = (data) =>
+    data
+      .normalize("NFD")
+      .replace(/([^0-9a-zA-Z\s])/g, "")
+      .toLowerCase();
   const send = () => {
     if (formComplete) {
-      props.stageUser({ ...props.user, ...state });
+      props.stageUser({
+        ...props.user,
+        pessoais: {
+          ...props.user.pessoais,
+          nome: state.nome.toLowerCase(),
+          genero: state.genero,
+          nascimentoDDMMAAAA: normalizeData(state.nascimentoDDMMAAAA),
+          meioDeContatoPreferido: state.meioDeContatoPreferido,
+          cpf: normalizeData(state.cpf),
+          email: state.email,
+        },
+        senha: state.senha,
+      });
       props.nextStep();
     }
   };
@@ -210,15 +227,5 @@ export const PersonalInfoStep = (props) => {
     </Box>
   );
 };
-
-// PersonalInfoStep.propTypes = {
-//   previousStep: PropTypes.func.isRequired,
-//   nextStep: PropTypes.func.isRequired,
-//   stageUser: PropTypes.func.isRequired,
-//   user: PropTypes.exact({
-//     uid: PropTypes.string.isRequired,
-//     telefone: PropTypes.string.isRequired
-//   }).isRequired
-// }
 
 export default PersonalInfoStep;

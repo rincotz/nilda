@@ -42,7 +42,7 @@ export const BankingStep = (props) => {
   const [state, setState] = useState({
     banco: "",
     agencia: "",
-    tipoDeConta: "",
+    tipoDeConta: "corrente",
     conta: "",
   });
 
@@ -51,16 +51,29 @@ export const BankingStep = (props) => {
 
   const formComplete =
     state.banco &&
-    !validator.banco(state.banco) &&
     state.agencia &&
     !validator.agencia(state.agencia) &&
     state.tipoDeConta &&
     state.conta &&
     !validator.conta(state.conta);
 
+  const normalizeData = (data) =>
+    data
+      .normalize("NFD")
+      .replace(/([^0-9a-zA-Z\s])/g, "")
+      .toLowerCase();
+
   const send = () => {
     if (formComplete) {
-      props.stageUser({ ...props.user, ...state });
+      props.addWorker({
+        ...props.user,
+        bancarios: {
+          banco: state.banco,
+          agencia: normalizeData(state.agencia),
+          tipoDeConta: state.tipoDeConta,
+          conta: normalizeData(state.conta),
+        },
+      });
     }
     props.nextStep();
   };
@@ -150,8 +163,9 @@ export const BankingStep = (props) => {
       </List>
       <Box mb={2}>
         <Button
+          color={"primary"}
           disabled={!formComplete}
-          variant="outlined"
+          variant="contained"
           onClick={() => send()}
         >
           avançar

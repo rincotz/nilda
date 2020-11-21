@@ -7,9 +7,7 @@ import {
   addPic,
   addGeopoint,
   addHirer,
-  getWorkers,
   aceitarDiarista,
-  stageService,
 } from "../actions";
 import WelcomeHirer from "./welcomeHirer";
 import PhoneStep from "../PhoneStep";
@@ -24,6 +22,7 @@ import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import Box from "@material-ui/core/Box";
 import Grid from "@material-ui/core/Grid";
 import HirerStep from "../HirerStep";
+import PaymentStep from "../PaymentStep";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -36,12 +35,13 @@ const useStyles = makeStyles((theme) => ({
 export const ContratarForm = (props) => {
   const classes = useStyles();
   const formSteps = [
-    <WelcomeHirer {...props} />,
-    <PhoneStep {...props} />,
-    <PersonalInfoStep {...props} />,
-    <ProfilePic {...props} />,
-    <AddressStep {...props} />,
-    <HirerStep {...props} />,
+    <WelcomeHirer atividade={"contratante"} {...props} />,
+    <PhoneStep atividade={"contratante"} {...props} />,
+    <PersonalInfoStep atividade={"contratante"} {...props} />,
+    <ProfilePic atividade={"contratante"} {...props} />,
+    <AddressStep atividade={"contratante"} {...props} />,
+    <HirerStep atividade={"contratante"} {...props} />,
+    <PaymentStep atividade={"contratante"} {...props} />,
   ];
   const nextButton = (
     <Button size="small" onClick={() => props.nextStep()}>
@@ -86,11 +86,9 @@ const mapDispatchToProps = (dispatch) => ({
   nextStep: () => dispatch(nextStep()),
   previousStep: () => dispatch(previousStep()),
   stageUser: (userObject) => dispatch(stageUser(userObject)),
-  stageService: (service) => dispatch(stageService(service)),
   addPic: (userObject) => dispatch(addPic(userObject)),
   addGeopoint: (userObject) => dispatch(addGeopoint(userObject)),
   addHirer: (userObject) => dispatch(addHirer(userObject)),
-  getWorkers: (userObject) => dispatch(getWorkers(userObject)),
   aceitarDiarista: (serviceInfo, worker) =>
     dispatch(aceitarDiarista(serviceInfo, worker)),
 });
@@ -99,7 +97,6 @@ const mapStateToProps = (state) => ({
   step: state.step,
   isNextDisabled: state.isNextDisabled,
   user: state.user,
-  service: state.service,
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ContratarForm);

@@ -6,7 +6,7 @@ import {
   stageUser,
   addPic,
   addGeopoint,
-  stageService,
+  addWorker,
 } from "../actions";
 import { makeStyles } from "@material-ui/core/styles";
 import MobileStepper from "@material-ui/core/MobileStepper";
@@ -35,14 +35,14 @@ const useStyles = makeStyles((theme) => ({
 export const TrabalharForm = (props) => {
   const classes = useStyles();
   const formSteps = [
-    <WelcomeHirer {...props} />,
-    <PhoneStep {...props} />,
-    <MeiStep {...props} />,
-    <BankingStep {...props} />,
-    <PersonalInfoStep {...props} />,
-    <ProfilePic {...props} />,
-    <AddressStep {...props} />,
-    <WaitingStep {...props} />,
+    <WelcomeHirer atividade={"diarista"} {...props} />,
+    <PhoneStep atividade={"diarista"} {...props} />,
+    <MeiStep atividade={"diarista"} {...props} />,
+    <PersonalInfoStep atividade={"diarista"} {...props} />,
+    <ProfilePic atividade={"diarista"} {...props} />,
+    <AddressStep atividade={"diarista"} {...props} />,
+    <BankingStep atividade={"diarista"} {...props} />,
+    <WaitingStep atividade={"diarista"} {...props} />,
   ];
   const nextButton = (
     <Button size="small" onClick={() => props.nextStep()}>
@@ -87,16 +87,15 @@ const mapDispatchToProps = (dispatch) => ({
   nextStep: () => dispatch(nextStep()),
   previousStep: () => dispatch(previousStep()),
   stageUser: (userObject) => dispatch(stageUser(userObject)),
-  stageService: (service) => dispatch(stageService(service)),
   addPic: (userObject) => dispatch(addPic(userObject)),
   addGeopoint: (userObject) => dispatch(addGeopoint(userObject)),
+  addWorker: (worker) => dispatch(addWorker(worker)),
 });
 
 const mapStateToProps = (state) => ({
   step: state.step,
   isNextDisabled: state.isNextDisabled,
   user: state.user,
-  service: state.service,
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TrabalharForm);

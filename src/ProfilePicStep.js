@@ -3,6 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import Box from "@material-ui/core/Box";
 import PhotoCameraIcon from "@material-ui/icons/PhotoCamera";
+import CheckIcon from "@material-ui/icons/CheckCircle";
 import Avatar from "@material-ui/core/Avatar";
 
 const useStyles = makeStyles((theme) => ({
@@ -37,12 +38,9 @@ export const ProfilePicStep = (props) => {
         encontrarem. Após adicionar a foto, clique em avançar.
       </Box>
       <Box mb={3}>
-        <Avatar
-          className={classes.avatar}
-          src={props.user.foto ? props.user.foto : ""}
-        >
-          {props.user.foto ? (
-            ""
+        <Avatar className={classes.avatar}>
+          {foto ? (
+            <CheckIcon style={{ fontSize: "60px" }} />
           ) : (
             <PhotoCameraIcon style={{ fontSize: "40px" }} />
           )}
@@ -68,7 +66,10 @@ export const ProfilePicStep = (props) => {
         onClick={() => {
           props.nextStep();
           if (foto) {
-            props.addPic({ ...props.user, foto });
+            props.addPic({
+              ...props.user,
+              pessoais: { ...props.user.pessoais, foto: foto },
+            });
           }
         }}
       >

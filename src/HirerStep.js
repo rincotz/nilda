@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import FormIntro from "./components/FormIntro";
 import TextField from "@material-ui/core/TextField";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -36,9 +36,9 @@ const useStyles = makeStyles((theme) => ({
 export const HirerStep = (props) => {
   const classes = useStyles();
   const [state, setState] = useState({
-    numeroDiariasEm4Semanas: props.user.numeroDiariasEm4Semanas || "",
     tipoDeHabitacao: props.user.tipoDeHabitacao || "",
     numeroDeComodos: props.user.numeroDeComodos || "",
+    numeroDeMoradores: props.user.numeroDeMoradores || "",
     cadastrarDiarista: "",
     agendamentos: [
       {
@@ -71,7 +71,6 @@ export const HirerStep = (props) => {
   };
   const verifySchedules = () => {
     var schedules = true;
-    console.log("cadastrar", state.cadastrarDiarista);
     !!state.cadastrarDiarista
       ? state.agendamentos.map((agendamento) => {
           if (!agendamento["horaAgendada"]) {
@@ -129,13 +128,51 @@ export const HirerStep = (props) => {
         });
     return schedules;
   };
-  console.log(verifySchedules());
   const formComplete =
-    state.tipoDeHabitacao && state.numeroDeComodos > 0 && verifySchedules();
+    state.tipoDeHabitacao &&
+    state.numeroDeComodos > 0 &&
+    state.numeroDeMoradores > 0 &&
+    verifySchedules();
+  const normalizeData = (data) =>
+    data
+      .normalize("NFD")
+      .replace(/([^0-9a-zA-Z\s])/g, "")
+      .toLowerCase();
   const send = () => {
     if (formComplete) {
-      props.addHirer({ ...props.user });
-      props.stageService({ ...state });
+      const agendamentosArray = [];
+      state.agendamentos.map((agendamento) =>
+        agendamentosArray.push({
+          horaAgendada: agendamento.horaAgendada,
+          minAgendado: agendamento.minAgendado,
+          diaAgendado: agendamento.diaAgendado,
+          numeroDiariasEm4Semanas: agendamento.numeroDiariasEm4Semanas,
+          diarista: {
+            nomeDiarista: state.cadastrarDiarista
+              ? normalizeData(agendamento.nomeDiarista)
+              : "",
+            celularDiarista: state.cadastrarDiarista
+              ? `+55${normalizeData(agendamento.celularDiarista)}`
+              : "",
+          },
+          faxinar: agendamento.faxinar,
+          lavar: agendamento.lavar,
+          passar: agendamento.passar,
+          cozinhar: agendamento.cozinhar,
+        })
+      );
+      props.addHirer({
+        ...props.user,
+        enderecos: [
+          {
+            ...props.user.enderecos[0],
+            tipoDeHabitacao: state.tipoDeHabitacao,
+            numeroDeComodos: state.numeroDeComodos,
+            numerodeMoradores: state.numeroDeMoradores,
+          },
+        ],
+        agendamentos: agendamentosArray,
+      });
       props.nextStep();
     }
   };
@@ -176,6 +213,18 @@ export const HirerStep = (props) => {
             name="numeroDeComodos"
             label="nº de cômodos"
             value={state.numeroDeComodos || ""}
+          />
+        </ListItem>
+        <ListItem>
+          <TextField
+            error={!!validator.comodos(state.numeroDeMoradores)}
+            helperText={validator.comodos(state.numeroDeMoradores)}
+            variant="outlined"
+            type="number"
+            onChange={(e) => onChange(e)}
+            name="numeroDeMoradores"
+            label="nº de moradores"
+            value={state.numeroDeMoradores || ""}
           />
         </ListItem>
         <ListItem>
@@ -287,9 +336,9 @@ export const HirerStep = (props) => {
                 variant="outlined"
                 onChange={(e) => onScheduleChange(e, index)}
                 name="horaAgendada"
-                label="h"
+                label="hr entrada"
                 value={state.agendamentos[index].horaAgendada || ""}
-                style={{ minWidth: 65 }}
+                style={{ minWidth: 70 }}
                 className={classes.input}
               >
                 {[6, 7, 8, 9, 10, 11, 12, 13, 14, 15].map((h, i) => (
@@ -305,7 +354,7 @@ export const HirerStep = (props) => {
                 name="minAgendado"
                 label="min"
                 value={state.agendamentos[index].minAgendado || ""}
-                style={{ minWidth: 65 }}
+                style={{ minWidth: 70 }}
                 className={classes.input}
               >
                 {["00", 15, 30, 45].map((m, i) => (
@@ -328,6 +377,10 @@ export const HirerStep = (props) => {
                         numeroDiariasEm4Semanas: "",
                         nomeDiarista: "",
                         celularDiarista: "",
+                        faxinar: false,
+                        lavar: false,
+                        passar: false,
+                        cozinhar: false,
                       });
                       setState({ ...temporaryState });
                     }}
@@ -426,7 +479,8 @@ export const HirerStep = (props) => {
       </List>
       <Button
         disabled={!formComplete}
-        variant="outlined"
+        variant="contained"
+        color={"primary"}
         onClick={() => send()}
       >
         avançar

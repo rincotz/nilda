@@ -36,9 +36,26 @@ export const AddressStep = (props) => {
     !validator.cep(state.cep) &&
     state.cidade &&
     state.estado !== 0;
+  const normalizeData = (data) =>
+    data
+      .normalize("NFD")
+      .replace(/([^0-9a-zA-Z\s])/g, "")
+      .toLowerCase();
   const send = () => {
     if (formComplete) {
-      props.addGeopoint({ ...props.user, ...state });
+      props.addGeopoint({
+        ...props.user,
+        enderecos: [
+          {
+            ...state,
+            logradouro: normalizeData(state.logradouro),
+            numero: normalizeData(state.numero),
+            complemento: state.complemento.toLowerCase(),
+            bairro: normalizeData(state.bairro),
+            cep: normalizeData(state.cep),
+          },
+        ],
+      });
       props.nextStep();
     }
   };

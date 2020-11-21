@@ -8,7 +8,7 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Navbar from "../components/Navbar";
 import NildaLogo from "../components/NildaLogo";
-import RegisterButtoms from "../components/RegisterButtoms";
+import RegisterButtons from "../components/RegisterButtons";
 import nilda from "../ilustrations/nilda.png";
 import Button from "@material-ui/core/Button";
 
@@ -72,7 +72,7 @@ export const HomePage = (props) => {
             </Button>
           </Grid>
           <Grid item xs={12}>
-            <RegisterButtoms />
+            <RegisterButtons />
           </Grid>
         </Grid>
       </Box>
@@ -111,7 +111,7 @@ export const HomePage = (props) => {
             </Button>
           </Box>
           <Box width={1}>
-            <RegisterButtoms />
+            <RegisterButtons />
           </Box>
         </Box>
       </Box>

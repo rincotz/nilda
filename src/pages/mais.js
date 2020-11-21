@@ -3,7 +3,7 @@ import Box from "@material-ui/core/Box";
 import Grid from "@material-ui/core/Grid";
 import Navbar from "../components/Navbar";
 import NildaLogo from "../components/NildaLogo";
-import RegisterButtoms from "../components/RegisterButtoms";
+import RegisterButtons from "../components/RegisterButtons";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/styles";
 import beach from "../ilustrations/beach.png";
@@ -83,7 +83,7 @@ const Mais = () => {
           </Typography>
         </Box>
         <Box width={1} mt={3}>
-          <RegisterButtoms />
+          <RegisterButtons />
         </Box>
       </Box>
       <Box display={{ xs: "none", sm: "block" }}>
@@ -136,7 +136,7 @@ const Mais = () => {
             </Typography>
           </Grid>
           <Grid item xs={12} sm={12} md={6}>
-            <RegisterButtoms />
+            <RegisterButtons />
           </Grid>
         </Grid>
       </Box>

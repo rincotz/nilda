@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { useState } from "react";
 import FormIntro from "./components/FormIntro";
 import Box from "@material-ui/core/Box";
 import List from "@material-ui/core/List";
@@ -41,9 +41,32 @@ export const MeiStep = (props) => {
     state.cnpj &&
     !!!validator.cnpj(state.cnpj) &&
     servicos;
+  const normalizeData = (data) =>
+    data
+      .normalize("NFD")
+      .replace(/([^0-9a-zA-Z\s])/g, "")
+      .toLowerCase();
   const send = () => {
     if (formComplete) {
-      props.addWorker({ ...props.user, ...state });
+      props.stageUser({
+        ...props.user,
+        beneficios: {
+          ferias: state.ferias,
+          decT: state.decT,
+          planoSaude: state.planoSaude,
+        },
+        profissionais: {
+          cnpj: normalizeData(state.cnpj),
+          diasLivres: state.diasLivres,
+          diasOcup: state.diasOcup,
+          diasFolga: state.diasFolga,
+          faxinar: state.faxinar,
+          lavarRoupas: state.lavarRoupas,
+          passarRoupas: state.passarRoupas,
+          cozinhar: state.cozinhar,
+        },
+      });
+      props.nextStep();
     }
   };
 
@@ -78,7 +101,7 @@ export const MeiStep = (props) => {
           </FormHelperText>
         </ListItem>
         <ListItem>
-          <FormGroup column>
+          <FormGroup>
             <FormControlLabel
               label="férias"
               control={
@@ -117,7 +140,7 @@ export const MeiStep = (props) => {
           </FormHelperText>
         </ListItem>
         <ListItem>
-          <FormGroup column>
+          <FormGroup>
             <FormControlLabel
               label="faxinar"
               control={
@@ -271,7 +294,7 @@ export const MeiStep = (props) => {
         <Button
           disabled={!formComplete}
           variant="contained"
-          color={"secondary"}
+          color={"primary"}
           onClick={() => send()}
         >
           avançar

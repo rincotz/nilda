@@ -77,21 +77,19 @@ export const stageUser = (user) => {
   };
 };
 
-export const stageService = (service) => {
-  return (dispatch) => {
-    dispatch({ type: constants.STAGE_SERVICE, service });
-  };
-};
-
 export const addPic = (user) => {
   return (dispatch) => {
     return storage
       .ref(`fotoPerfil/${user.uid}`)
-      .put(user.foto)
+      .put(user.pessoais.foto)
       .then((snapshot) =>
         snapshot.ref
           .getDownloadURL()
-          .then((foto) => dispatch(stageUser({ ...user, foto })))
+          .then((foto) =>
+            dispatch(
+              stageUser({ ...user, pessoais: { ...user.pessoais, foto: foto } })
+            )
+          )
       );
   };
 };
@@ -111,7 +109,7 @@ export const clientGeocodeParams = (user, key) => {
 
 export const addGeopoint = (user) => {
   return (dispatch) => {
-    return clientGeocodeParams(user, key)
+    return clientGeocodeParams(user.enderecos[0], key)
       .then(({ data }) => {
         const { lat, lng } = data.results[0].geometry.location;
         dispatch(stageUser({ ...user, coordinates: geoponto(lat, lng) }));
@@ -135,107 +133,83 @@ export const minimoAgendamentoMoment = (diaAgendado) => {
   }
 };
 
-export const hirerCard = (hirer) => ({
-  foto: hirer.foto || "",
-  genero: hirer.genero,
-  meioDeContatoPreferido: hirer.meioDeContatoPreferido,
-  nascimentoDDMMAAAA: hirer.nascimentoDDMMAAAA,
-  nome: hirer.nome,
-  telefone: hirer.telefone,
-  uid: hirer.uid,
-});
+export const getId = (collectionName) => {
+  const doc = database.collection(collectionName).doc();
+  return doc.id;
+};
 
-export const hirerInfo = (hirer, service) => ({
-  atividade: "contratante",
-  avaliacoes: [],
-  cpf: hirer.cpf,
-  criada: moment().valueOf(),
-  endereco: {
-    bairro: hirer.bairro,
-    cep: hirer.cep,
-    cidade: hirer.cidade,
-    complemento: hirer.complemento,
-    coordinates: hirer.coordinates,
-    estado: hirer.estado,
-    logradouro: hirer.logradouro,
-    numero: hirer.numero,
-    numeroDeComodos: service.numeroDeComodos,
-    tipoDeHabitacao: service.tipoDeHabitacao,
-  },
-  email: hirer.email,
-  foto: hirer.foto || "",
-  genero: hirer.genero,
-  meioDeContatoPreferido: hirer.meioDeContatoPreferido,
-  nascimentoDDMMAAAA: hirer.nascimentoDDMMAAAA,
-  nome: hirer.nome,
-  telefone: hirer.telefone,
-  uid: hirer.uid,
-  ultimoPgto: "",
-});
-
-export const serviceCard = (hirer, service, scheduler) => ({
-  agendamento: scheduler(service.diaAgendado).valueOf(),
-  bairro: hirer.bairro,
-  cep: hirer.cep,
-  cidade: hirer.cidade,
-  complemento: hirer.complemento,
-  contratante: hirerCard(hirer),
-  coordinates: hirer.coordinates,
-  numeroDeComodos: service.numeroDeComodos,
-  criada: moment().valueOf(),
-  diaAgendado: service.diaAgendado,
-  estado: hirer.estado,
-  numeroDiariasEm4Semanas: service.numeroDiariasEm4Semanas,
-  horaAgendada: service.horaAgendada,
-  logradouro: hirer.logradouro,
-  minAgendado: service.minAgendado,
-  numero: hirer.numero,
-  pgto: "",
-  status: "pendente",
-  tipoDeHabitacao: service.tipoDeHabitacao,
-  trabalhador: "",
-  unixStartOfDay: scheduler(service.diaAgendado).startOf("day").valueOf(),
-  vencimentoEndOfDay: moment().endOf("day").add(2, "days").valueOf(),
-});
-
-export const addHirer = () => {
-  return (dispatch, getState) => {
-    const hirer = getState().user;
-    const service = getState().service;
-    const doc = database.collection("servicos").doc();
-    const sid = doc.id;
-    const cadastroContratante = () =>
+export const addHirer = (hirer) => {
+  return (dispatch) => {
+    const servicos = [];
+    const servicosState = [];
+    hirer.agendamentos.map((agendamento, index) => {
+      const sid = getId("servicos");
+      servicos.push({ ...agendamento, sid });
+      servicosState.push({ ...agendamento, sid });
+    });
+    const cadastroContratante = (contratante) =>
       database
         .collection("contratantes")
         .doc(hirer.uid)
-        .set({ ...hirerInfo(hirer, service), servicos: [sid] });
+        .set({
+          ...contratante,
+          agendamentos: servicos,
+          criada: moment().valueOf(),
+          ultimoPgo: "",
+        });
     const cadastroEmail = () =>
       auth.currentUser.linkWithCredential(
-        firebase.auth.EmailAuthProvider.credential(hirer.email, hirer.senha)
+        firebase.auth.EmailAuthProvider.credential(
+          hirer.pessoais.email,
+          hirer.senha
+        )
       );
     const cadastroAuth = () =>
       auth.currentUser.updateProfile({
-        displayName: `${hirer.atividade} ${hirer.nome}`,
-        photoURL: hirer.foto || "",
+        displayName: `contratante ${hirer.pessoais.nome}`,
+        photoURL: hirer.pessoais.foto || "",
       });
-    const cadastroServicos = () =>
-      database
-        .collection("servicos")
-        .doc(sid)
-        .set({ ...serviceCard(hirer, service, minimoAgendamentoMoment), sid });
+    const cadastroServicos = () => {
+      hirer.agendamentos.map((servico, index) =>
+        geofirestore
+          .collection("servicos")
+          .doc(servicos[index])
+          .set({
+            ...servico,
+            sid: servicos[index],
+            agendamento: minimoAgendamentoMoment(servico.diaAgendado).valueOf(),
+            criada: moment().valueOf(),
+            pgto: "",
+            vencimento: moment().endOf("day").add(2, "days").valueOf(),
+            status: "pendente",
+            contratante: {
+              ...hirer.pessoais,
+              uid: hirer.uid,
+            },
+            endereco: { ...hirer.enderecos[0] },
+            coordinates: hirer.coordinates,
+          })
+      );
+    };
     return Promise.all([
-      cadastroContratante(),
+      cadastroContratante(hirer),
       cadastroEmail(),
       cadastroAuth(),
       cadastroServicos(),
     ])
       .then(() => {
-        dispatch(
-          stageService(serviceCard(hirer, service, minimoAgendamentoMoment))
-        );
-        analytics.logEvent(constants.ADD_USER_SUCCESS, { user: hirer.uid });
+        dispatch({
+          type: constants.STAGE_USER,
+          hirer: { ...hirer, agendamentos: [...servicosState] },
+        });
         return database.collection("incompletos").doc(hirer.uid).delete();
       })
+      .catch((error) =>
+        analytics.logEvent(constants.DELETE_INCOMPLETE_FAIL, {
+          user: hirer.uid,
+          error: error.message,
+        })
+      )
       .catch((error) =>
         analytics.logEvent(constants.ADD_USER_FAIL, {
           user: hirer.uid,
@@ -245,106 +219,107 @@ export const addHirer = () => {
   };
 };
 
-const workerCard = (worker) => ({
-  agendamentos: [],
-  cnpjVerificado: false,
-  contratantes: [],
-  disponibilidade: 4,
-  uid: worker.uid,
-  nome: worker.nome,
-  genero: worker.genero,
-  coordinates: worker.coordinates,
-  meioDeContatoPreferido: worker.meioDeContatoPreferido,
-  nascimentoDDMMAAAA: worker.nascimentoDDMMAAAA,
-  servicos: [],
-  foto: worker.foto || "",
-  telefone: worker.telefone,
-});
-
-const conversionCard = (worker) => ({
-  uid: worker.uid,
-  nome: worker.nome,
-  coordinates: worker.coordinates,
-  telefone: worker.telefone,
-  meioDeContatoPreferido: worker.meioDeContatoPreferido,
-  nascimentoDDMMAAAA: worker.nascimentoDDMMAAAA,
-  genero: worker.genero,
-  ferias: worker.ferias,
-  decT: worker.decT,
-  planoSaude: worker.planoSaude,
-  cnpjVerificado: false,
-});
-
-const workerInfo = (worker) => ({
-  agenda: {
-    seg: worker.diasLivres[0] ? 4 : 0,
-    ter: worker.diasLivres[1] ? 4 : 0,
-    qua: worker.diasLivres[2] ? 4 : 0,
-    qui: worker.diasLivres[3] ? 4 : 0,
-    sex: worker.diasLivres[4] ? 4 : 0,
-    sab: worker.diasLivres[5] ? 4 : 0,
-    dom: worker.diasLivres[6] ? 4 : 0,
-  },
-  atividade: "diarista",
-  avaliacoes: [],
-  cnpj: worker.cnpj,
-  cpf: worker.cpf,
-  criada: moment().valueOf(),
-  decT: worker.decT,
-  diasTrab: 0,
-  endereco: {
-    bairro: worker.bairro,
-    cep: worker.cep,
-    cidade: worker.cidade,
-    complemento: worker.complemento,
-    coordinates: worker.coordinates,
-    estado: worker.estado,
-    logradouro: worker.logradouro,
-    numero: worker.numero,
-  },
-  email: worker.email,
-  ferias: worker.ferias,
-  foto: worker.foto || "",
-  genero: worker.genero,
-  meioDeContatoPreferido: worker.meioDeContatoPreferido,
-  nascimentoDDMMAAAA: worker.nascimentoDDMMAAAA,
-  nome: worker.nome,
-  planoSaude: worker.planoSaude,
-  servicosRealizados: [],
-  telefone: worker.telefone,
-  uid: worker.uid,
-  cnpjVerificado: false,
-});
-
-export const addWorker = () => {
-  return (dispatch, getState) => {
-    const worker = getState().user;
-    const diasConversao = worker.diasOcup.filter(Boolean).length;
-    dispatch(stageUser({ diasConversao, ...workerInfo(worker) }));
-    const cadastroDiarista = () => {
+export const addWorker = (worker) => {
+  return (dispatch) => {
+    const diasConversao = worker.profissionais.diasOcup.filter(Boolean).length;
+    const cadastroDiarista = () =>
       database
         .collection("diaristas")
         .doc(worker.uid)
-        .set({ diasConversao, ...workerInfo(worker) });
-    };
+        .set({
+          uid: worker.uid,
+          diasConversao,
+          pessoais: { ...worker.pessoais },
+          endereco: { ...worker.enderecos[0] },
+          agenda: {
+            seg: worker.profissionais.diasLivres[0]
+              ? { 1: "", 2: "", 3: "", 4: "" }
+              : worker.profissionais.diasOcup[0]
+              ? "ocupada"
+              : false,
+            ter: worker.profissionais.diasLivres[1]
+              ? { 1: "", 2: "", 3: "", 4: "" }
+              : worker.profissionais.diasOcup[1]
+              ? "ocupada"
+              : false,
+            qua: worker.profissionais.diasLivres[2]
+              ? { 1: "", 2: "", 3: "", 4: "" }
+              : worker.profissionais.diasOcup[2]
+              ? "ocupada"
+              : false,
+            qui: worker.profissionais.diasLivres[3]
+              ? { 1: "", 2: "", 3: "", 4: "" }
+              : worker.profissionais.diasOcup[3]
+              ? "ocupada"
+              : false,
+            sex: worker.profissionais.diasLivres[4]
+              ? { 1: "", 2: "", 3: "", 4: "" }
+              : worker.profissionais.diasOcup[4]
+              ? "ocupada"
+              : false,
+            sab: worker.profissionais.diasLivres[5]
+              ? { 1: "", 2: "", 3: "", 4: "" }
+              : worker.profissionais.diasOcup[5]
+              ? "ocupada"
+              : false,
+            dom: worker.profissionais.diasLivres[6]
+              ? { 1: "", 2: "", 3: "", 4: "" }
+              : worker.profissionais.diasOcup[6]
+              ? "ocupada"
+              : false,
+          },
+          criada: moment().valueOf(),
+          servicosRealizados: [],
+          ...worker,
+          profissionais: {
+            cnpj: worker.profissionais.cnpj,
+            cnpjVerificado: false,
+            servicosPrestados: [],
+            faxinar: worker.profissionais.faxinar,
+            cozinhar: worker.profissionais.cozinhar,
+            lavarRoupas: worker.profissionais.lavarRoupas,
+            passarRoupas: worker.profissionais.passarRoupas,
+          },
+          beneficios: worker.beneficios,
+        });
     const cadastroEmail = () =>
       auth.currentUser.linkWithCredential(
-        firebase.auth.EmailAuthProvider.credential(worker.email, worker.senha)
+        firebase.auth.EmailAuthProvider.credential(
+          worker.pessoais.email,
+          worker.senha
+        )
       );
     const cadastroAuth = () =>
       auth.currentUser.updateProfile({
-        displayName: `${worker.atividade} ${worker.nome}`,
-        photoURL: worker.foto || "",
+        displayName: `diarista ${worker.pessoais.nome}`,
+        photoURL: worker.pessoais.foto || "",
       });
     const cadastroDisponibilidade = () =>
-      worker.diasLivres.filter((day, index) => {
+      worker.profissionais.diasLivres.filter((day, index) => {
         const promiseArray = [];
         day &&
           promiseArray.push(
             geofirestore
               .collection(semana[index])
               .doc(worker.uid)
-              .set(workerCard(worker))
+              .set({
+                uid: worker.uid,
+                pessoais: { ...worker.pessoais },
+                endereco: {
+                  ...worker.enderecos[0],
+                },
+                profissionais: {
+                  cnpj: worker.profissionais.cnpj,
+                  cnpjVerificado: false,
+                  faxinar: worker.profissionais.faxinar,
+                  cozinhar: worker.profissionais.cozinhar,
+                  lavarRoupas: worker.profissionais.lavarRoupas,
+                  passarRoupas: worker.profissionais.passarRoupas,
+                  agendamentos: {},
+                  disponibilidade: 4,
+                },
+                coordinates: worker.coordinates,
+              })
           );
         return promiseArray;
       });
@@ -354,8 +329,15 @@ export const addWorker = () => {
         .collection("conversao")
         .doc(worker.uid)
         .set({
+          uid: worker.uid,
           diasConversao,
-          ...conversionCard(worker),
+          profissionais: {
+            cnpj: worker.profissionais.cnpj,
+            cnpjVerificado: false,
+          },
+          beneficios: worker.beneficios,
+          pessoais: worker.pessoais,
+          endereco: { ...worker.enderecos[0] },
         });
     return Promise.all([
       cadastroDiarista(),
@@ -364,21 +346,16 @@ export const addWorker = () => {
       ...cadastroDisponibilidade(),
       cadastroConversao(),
     ])
-      .then(() => {
-        return database
-          .collection("incompletos")
-          .doc(worker.uid)
-          .delete()
-          .then(() =>
-            analytics.logEvent(constants.ADD_USER_SUCCESS, { user: worker.uid })
-          )
-          .catch((error) =>
-            analytics.logEvent(constants.DELETE_INCOMPLETE_FAIL, {
-              user: worker.uid,
-              error: error.message,
-            })
-          );
-      })
+      .then(() => database.collection("incompletos").doc(worker.uid).delete())
+      .then(() =>
+        analytics.logEvent(constants.ADD_USER_SUCCESS, { user: worker.uid })
+      )
+      .catch((error) =>
+        analytics.logEvent(constants.DELETE_INCOMPLETE_FAIL, {
+          user: worker.uid,
+          error: error.message,
+        })
+      )
       .catch((error) =>
         analytics.logEvent(constants.ADD_USER_FAIL, {
           user: worker.uid,
@@ -388,29 +365,63 @@ export const addWorker = () => {
   };
 };
 
-export const getWorkers = () => {
-  return (dispatch, getState) => {
-    const workers = [];
-    const service = getState().service;
-    return geofirestore
-      .collection(service.diaAgendado)
-      .near({ center: service.coordinates, radius: 10 })
-      .get()
-      .then((workersData) => {
-        workersData.docs.map((worker) =>
-          workers.push({
-            ...worker.data(),
-            distance: worker.distance,
-          })
-        );
-        return workers;
+export const getWorkers2 = (dia, diariasEm4Semanas) => {
+  const workers = [];
+  return geofirestore
+    .collection(dia)
+    .near({
+      center: geoponto(-23.5839152, -46.7314881),
+      radius: 15,
+      limit: 5,
+    })
+    .get()
+    .then((workersData) => {
+      workersData.docs.map((worker) => {
+        if (
+          worker.data().profissionais.disponibilidade >= diariasEm4Semanas &&
+          worker.data().profissionais.cnpjVerificado
+        ) {
+          workers.push({ ...worker.data(), distance: worker.distance });
+        }
       });
+      return workers;
+    });
+};
+
+export const aceitarDiarista2 = (worker, index) => {
+  return (dispatch, getState) => {
+    const service = getState().user.agendamentos[index];
+    const workerAvailabilityRef = database
+      .collection(service.diaAgendado)
+      .doc(worker.uid);
+    return database.runTransaction((transaction) => {
+      return transaction.get(workerAvailabilityRef).then((res) => {
+        const newAvailability =
+          res.data().profissionais.disponibilidade -
+          service.numeroDiariasEm4Semanas;
+        const agendamentos = res.data().profissionais.agendamentos;
+        let diaMinimo = minimoAgendamentoMoment(service.diaAgendado);
+        const diaAgendado = () => {
+          while (agendamentos.indexOf(diaMinimo) !== -1) {
+            newAvailability === 2 && service.numeroDiariasEm4Semanas === 1
+              ? diaMinimo.add(14, "days")
+              : diaMinimo.add(7, "days");
+          }
+          return moment(diaMinimo).valueOf();
+        };
+        agendamentos.push(diaAgendado());
+        transaction.update(workerAvailabilityRef, {
+          ...agendamentos,
+          disponibilidade: newAvailability,
+        });
+      });
+    });
   };
 };
 
 export const aceitarDiarista = (worker) => {
   return (dispatch, getState) => {
-    const service = getState().service;
+    const service = getState().user.agendamentos;
     const workerAvailabilityRef = database
       .collection(service.diaAgendado)
       .doc(worker.uid);

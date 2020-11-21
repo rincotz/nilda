@@ -1,7 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
-import Paper from "@material-ui/core/Paper";
 import Divider from "@material-ui/core/Divider";
 import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
@@ -36,7 +35,7 @@ const NildaLogo = ({ subtitle = true }) => {
             variant={"subtitle1"}
             align={"center"}
           >
-            aqui cuidamos de sua casa e de quem cuida dela
+            nós cuidamos de sua casa e de quem cuida dela
           </Typography>
         )}
       </Link>

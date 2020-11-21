@@ -2,7 +2,7 @@ import React from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
-import Routes from "./routes";
+import AppRouter from "./AppRouter";
 import Home from "./pages/home";
 
 const theme = createMuiTheme();
@@ -18,7 +18,7 @@ function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <div>
-        <Routes />
+        <AppRouter />
       </div>
     </ThemeProvider>
   );
