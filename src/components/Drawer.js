@@ -12,10 +12,8 @@ import ListItemAvatar from "@material-ui/core/ListItemAvatar";
 import Avatar from "@material-ui/core/Avatar";
 import MenuIcon from "@material-ui/icons/Menu";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
-import WorkIcon from "@material-ui/icons/Work";
 import ErrorIcon from "@material-ui/icons/Error";
 import BeachIcon from "@material-ui/icons/BeachAccess";
-import HomeIcon from "@material-ui/icons/Home";
 import { makeStyles } from "@material-ui/styles";
 import SvgIcon from "@material-ui/core/SvgIcon";
 

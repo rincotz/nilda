@@ -1,17 +1,15 @@
 import React from "react";
 import Box from "@material-ui/core/Box";
-import Avatar from "@material-ui/core/Avatar";
+import CardMedia from "@material-ui/core/CardMedia";
 import IconButton from "@material-ui/core/IconButton";
 import CheckIcon from "@material-ui/icons/CheckCircle";
 import SvgIcon from "@material-ui/core/SvgIcon";
 import LaundryIcon from "@material-ui/icons/LocalLaundryService";
-import FridgeIcon from "@material-ui/icons/Kitchen";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import moment from "moment";
 
 const useStyles = makeStyles((theme) => ({
   foto: {
-    height: theme.spacing(14),
     width: theme.spacing(14),
   },
   icon: {
@@ -30,11 +28,10 @@ export default (props) => {
 
   return (
     <Box boxShadow={2} display={"flex"}>
-      <Avatar
+      <CardMedia
         className={classes.foto}
-        variant={"square"}
-        src={worker.pessoais.foto || ""}
-        alt={worker.pessoais.nome}
+        image={worker.pessoais.foto || ""}
+        title={worker.pessoais.nome}
       />
       <Box
         m={2}
@@ -60,13 +57,6 @@ export default (props) => {
                 }
               />
             </SvgIcon>
-          )}
-          {worker.profissionais.cozinhar && (
-            <FridgeIcon
-              className={classes.icon}
-              aria-label={"cozinha"}
-              titleAccess={"cozinha"}
-            />
           )}
           {worker.profissionais.lavarRoupas && (
             <LaundryIcon
@@ -99,7 +89,15 @@ export default (props) => {
         mr={1}
       >
         <Box mr={2}>{props.distance.toPrecision(2)}km</Box>
-        <IconButton aria-label={"aceitar diarista"} color={"secondary"}>
+        <IconButton
+          aria-label={"aceitar diarista"}
+          color={"secondary"}
+          onClick={() => {
+            props
+              .aceitarDiarista(worker, props.index)
+              .then(() => props.agendamentoCompleto(props.index));
+          }}
+        >
           <CheckIcon />
         </IconButton>
       </Box>

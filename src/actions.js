@@ -143,9 +143,15 @@ export const addHirer = (hirer) => {
     const servicos = [];
     const servicosState = [];
     hirer.agendamentos.map((agendamento, index) => {
-      const sid = getId("servicos");
-      servicos.push({ ...agendamento, sid });
-      servicosState.push({ ...agendamento, sid });
+      if (agendamento.celularDiarista) {
+        const sid = getId("cadastrar");
+        servicos.push(sid);
+        servicosState.push({ ...agendamento, sid });
+      } else {
+        const sid = getId(`${agendamento.diaAgendado}Recruta`);
+        servicos.push(sid);
+        servicosState.push({ ...agendamento, sid });
+      }
     });
     const cadastroContratante = (contratante) =>
       database
@@ -172,7 +178,11 @@ export const addHirer = (hirer) => {
     const cadastroServicos = () => {
       hirer.agendamentos.map((servico, index) =>
         geofirestore
-          .collection("servicos")
+          .collection(
+            servico.celularDiarista
+              ? "cadastrar"
+              : `${servico.diaAgendado}Recruta`
+          )
           .doc(servicos[index])
           .set({
             ...servico,
@@ -200,7 +210,7 @@ export const addHirer = (hirer) => {
       .then(() => {
         dispatch({
           type: constants.STAGE_USER,
-          hirer: { ...hirer, agendamentos: [...servicosState] },
+          user: { ...hirer, agendamentos: [...servicosState] },
         });
         return database.collection("incompletos").doc(hirer.uid).delete();
       })
@@ -233,50 +243,48 @@ export const addWorker = (worker) => {
           endereco: { ...worker.enderecos[0] },
           agenda: {
             seg: worker.profissionais.diasLivres[0]
-              ? { 1: "", 2: "", 3: "", 4: "" }
+              ? 4
               : worker.profissionais.diasOcup[0]
               ? "ocupada"
               : false,
             ter: worker.profissionais.diasLivres[1]
-              ? { 1: "", 2: "", 3: "", 4: "" }
+              ? 4
               : worker.profissionais.diasOcup[1]
               ? "ocupada"
               : false,
             qua: worker.profissionais.diasLivres[2]
-              ? { 1: "", 2: "", 3: "", 4: "" }
+              ? 4
               : worker.profissionais.diasOcup[2]
               ? "ocupada"
               : false,
             qui: worker.profissionais.diasLivres[3]
-              ? { 1: "", 2: "", 3: "", 4: "" }
+              ? 4
               : worker.profissionais.diasOcup[3]
               ? "ocupada"
               : false,
             sex: worker.profissionais.diasLivres[4]
-              ? { 1: "", 2: "", 3: "", 4: "" }
+              ? 4
               : worker.profissionais.diasOcup[4]
               ? "ocupada"
               : false,
             sab: worker.profissionais.diasLivres[5]
-              ? { 1: "", 2: "", 3: "", 4: "" }
+              ? 4
               : worker.profissionais.diasOcup[5]
               ? "ocupada"
               : false,
             dom: worker.profissionais.diasLivres[6]
-              ? { 1: "", 2: "", 3: "", 4: "" }
+              ? 4
               : worker.profissionais.diasOcup[6]
               ? "ocupada"
               : false,
           },
           criada: moment().valueOf(),
-          servicosRealizados: [],
           ...worker,
           profissionais: {
             cnpj: worker.profissionais.cnpj,
             cnpjVerificado: false,
             servicosPrestados: [],
             faxinar: worker.profissionais.faxinar,
-            cozinhar: worker.profissionais.cozinhar,
             lavarRoupas: worker.profissionais.lavarRoupas,
             passarRoupas: worker.profissionais.passarRoupas,
           },
@@ -312,7 +320,6 @@ export const addWorker = (worker) => {
                   cnpj: worker.profissionais.cnpj,
                   cnpjVerificado: false,
                   faxinar: worker.profissionais.faxinar,
-                  cozinhar: worker.profissionais.cozinhar,
                   lavarRoupas: worker.profissionais.lavarRoupas,
                   passarRoupas: worker.profissionais.passarRoupas,
                   agendamentos: {},
@@ -365,7 +372,7 @@ export const addWorker = (worker) => {
   };
 };
 
-export const getWorkers2 = (dia, diariasEm4Semanas) => {
+export const getWorkers = (dia, diariasEm4Semanas) => {
   const workers = [];
   return geofirestore
     .collection(dia)
@@ -388,68 +395,114 @@ export const getWorkers2 = (dia, diariasEm4Semanas) => {
     });
 };
 
-export const aceitarDiarista2 = (worker, index) => {
+export const aceitarDiarista = (worker, index) => {
   return (dispatch, getState) => {
+    const hirer = getState().user;
     const service = getState().user.agendamentos[index];
-    const workerAvailabilityRef = database
-      .collection(service.diaAgendado)
-      .doc(worker.uid);
-    return database.runTransaction((transaction) => {
-      return transaction.get(workerAvailabilityRef).then((res) => {
-        const newAvailability =
-          res.data().profissionais.disponibilidade -
-          service.numeroDiariasEm4Semanas;
-        const agendamentos = res.data().profissionais.agendamentos;
-        let diaMinimo = minimoAgendamentoMoment(service.diaAgendado);
-        const diaAgendado = () => {
-          while (agendamentos.indexOf(diaMinimo) !== -1) {
-            newAvailability === 2 && service.numeroDiariasEm4Semanas === 1
-              ? diaMinimo.add(14, "days")
-              : diaMinimo.add(7, "days");
-          }
-          return moment(diaMinimo).valueOf();
-        };
-        agendamentos.push(diaAgendado());
-        transaction.update(workerAvailabilityRef, {
-          ...agendamentos,
-          disponibilidade: newAvailability,
-        });
-      });
-    });
-  };
-};
-
-export const aceitarDiarista = (worker) => {
-  return (dispatch, getState) => {
-    const service = getState().user.agendamentos;
-    const workerAvailabilityRef = database
+    const workerRef = database.collection("diaristas").doc(worker.uid);
+    const workerWeekDayRef = database
       .collection(service.diaAgendado)
       .doc(worker.uid);
     const serviceRef = database.collection("servicos").doc(service.sid);
     return database.runTransaction((transaction) => {
-      return transaction.get(workerAvailabilityRef).then((res) => {
-        const newAvailability =
-          res.data().disponibilidade - service.numeroDiariasEm4Semanas;
-        const agendamentos = res.data().agendamentos;
-        const contratantes = res.data().contratantes;
-        let diaMinimo = minimoAgendamentoMoment(service.diaAgendado);
-        const diaAgendado = () => {
-          while (agendamentos.indexOf(diaMinimo) !== -1) {
-            newAvailability === 2 && service.numeroDiariasEm4Semanas === 1
-              ? diaMinimo.add(14, "days")
-              : diaMinimo.add(7, "days");
-          }
-          return diaMinimo.dayOfYear();
-        };
-        agendamentos.push(diaAgendado());
-        contratantes.push(service.contratante.uid);
-        transaction.update(serviceRef, { diarista: worker.uid });
-        transaction.update(workerAvailabilityRef, {
-          agendamentos,
-          disponibilidade: newAvailability,
-          contratantes,
-        });
-      });
+      return transaction
+        .get(workerWeekDayRef)
+        .then((res) => {
+          const newAvailability =
+            res.data().d.profissionais.disponibilidade -
+            service.numeroDiariasEm4Semanas;
+          const agendamentos = res.data().d.profissionais.agendamentos;
+          let diaMinimo = minimoAgendamentoMoment(
+            service.diaAgendado
+          ).valueOf();
+          const diaFinalAgendado = (agendamentos, dia) => {
+            while (agendamentos.indexOf(dia) !== -1) {
+              newAvailability === 2 && service.numeroDiariasEm4Semanas === 1
+                ? dia.add(14, "days")
+                : dia.add(7, "days");
+            }
+            return moment(dia).valueOf();
+          };
+          const diaAgendado = diaFinalAgendado(agendamentos, diaMinimo);
+          agendamentos.push(diaAgendado);
+          const path = `agenda.${service.diaAgendado}`;
+          transaction.update(workerRef, { [path]: newAvailability });
+          transaction.update(workerWeekDayRef, {
+            "d.profissionais.agendamentos": agendamentos,
+            "d.profissionais.disponibilidade": newAvailability,
+          });
+          transaction.update(serviceRef, {
+            "d.diarista": {
+              pessoais: worker.pessoais,
+              profissionais: worker.profissionais,
+            },
+            diaAgendadoMoment: diaAgendado,
+            status: "diarista selecionada",
+          });
+        })
+        .then(() =>
+          analytics.logEvent("WORKER_PROVISIONED", {
+            sid: service.sid,
+            hirer: hirer.uid,
+            worker: worker.uid,
+          })
+        )
+        .catch((e) =>
+          analytics.logEvent("WORKER_PROVISION_FAIL", {
+            sid: service.sid,
+            hirer: hirer.uid,
+            worker: worker.uid,
+            error: e.message,
+          })
+        );
     });
+  };
+};
+
+export const mostrarDiariasDisponiveis = () => {
+  return (dispatch, getState) => {
+    const user = getState().user;
+    const availableDays = {};
+    return database
+      .collection("diaristas")
+      .doc(user.uid)
+      .get()
+      .then((doc) => {
+        const agenda = doc.data().agenda;
+        const coordinates = doc.data().coordinates;
+        dispatch({
+          type: constants.STAGE_USER,
+          user: { ...user, coordinates },
+        });
+        for (const [key, value] of Object.entries(agenda)) {
+          if (value > 0) {
+            availableDays[key] = value;
+          }
+        }
+        return availableDays;
+      });
+  };
+};
+
+export const procurarServicos = (dia, disponibilidade) => {
+  return (dispatch, getState) => {
+    const coordinates = getState().user.coordinates;
+    const servicos = [];
+    return geofirestore
+      .collection(`${dia}Recruta`)
+      .near({ center: coordinates, radius: 15 })
+      .get()
+      .then((servicesData) => {
+        servicesData.docs.map((servico) => {
+          if (
+            servico.data().status === "aguardando diarista" &&
+            servico.data().pgto &&
+            servico.data().numeroDiariasEm4Semanas <= disponibilidade
+          ) {
+            servicos.push({ ...servico.data(), distance: servico.distance });
+          }
+        });
+        return servicos;
+      });
   };
 };

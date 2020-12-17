@@ -4,13 +4,9 @@ import Home from "./pages/home";
 import Mais from "./pages/mais";
 import ContratarForm from "./pages/contratar";
 import TrabalharForm from "./pages/trabalhar";
-import WorkerCard from "./components/WorkerCard";
-import { hirer, worker } from "./__tests__/people";
-import DayCard from "./components/DayCard";
-import FindWorkers from "./FindWorkers";
-import ProfilePicStep from "./ProfilePicStep";
+import Diarias from "./pages/diarias";
 
-const testComponent = () => <FindWorkers user={hirer} />;
+const testComponent = () => <Diarias />;
 
 export default () => (
   <BrowserRouter>
@@ -20,7 +16,7 @@ export default () => (
       <Route path={"/contratar"} component={ContratarForm} />
       <Route path={"/trabalhar"} component={TrabalharForm} />
       <Route path={"/editar"} component={Mais} />
-      <Route path={"/diarias"} component={Mais} />
+      <Route path={"/diarias"} component={Diarias} />
       <Route path={"/beneficios"} component={Mais} />
       <Route path={"/ocorrencias"} component={Mais} />
       <Route path={"/test"} component={testComponent} />

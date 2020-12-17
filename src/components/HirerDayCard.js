@@ -4,14 +4,17 @@ import Box from "@material-ui/core/Box";
 import IconButton from "@material-ui/core/IconButton";
 import CheckIcon from "@material-ui/icons/CheckCircle";
 import CalendarIcon from "@material-ui/icons/Event";
-import { CircularProgress } from "@material-ui/core";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 export default (props) => {
   const [workers, setWorkers] = useState("");
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     const fetchData = async () => {
-      const result = await props.getWorkers(props.diaAgendado);
+      const result = await props.getWorkers(
+        props.agendamento.diaAgendado,
+        props.agendamento.numeroDiariasEm4Semanas
+      );
       setWorkers(result);
     };
     fetchData().then(() => setLoading(false));
@@ -27,16 +30,21 @@ export default (props) => {
       flexDirection={"column"}
     >
       <Box fontSize={"h5.fontSize"} mb={2}>
-        <CalendarIcon style={{ verticalAlign: "middle" }} /> {props.diaAgendado}
-        , {props.hora}:{props.min}
+        <CalendarIcon style={{ verticalAlign: "middle" }} />{" "}
+        {props.agendamento.diaAgendado}, {props.agendamento.horaAgendada}:
+        {props.agendamento.minAgendado}
       </Box>
       <Box mx={"auto"}>
         {loading ? (
           <CircularProgress color={"primary"} />
         ) : workers.length > 0 ? (
-          workers.map((worker, index) => (
-            <Box my={1} key={index}>
-              <WorkerCard worker={worker} distance={worker.distance} />
+          workers.map((worker) => (
+            <Box my={1} key={`${props.agendamento.sid}${worker.uid}`}>
+              <WorkerCard
+                worker={worker}
+                distance={worker.distance}
+                {...props}
+              />
             </Box>
           ))
         ) : (
@@ -45,7 +53,10 @@ export default (props) => {
       </Box>
       {!loading && workers.length === 0 && (
         <Box display={"flex"} justifyContent={"flex-end"}>
-          <IconButton color={"primary"}>
+          <IconButton
+            color={"primary"}
+            onClick={() => props.agendamentoCompleto(props.index)}
+          >
             <CheckIcon />
           </IconButton>
         </Box>

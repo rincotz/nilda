@@ -51,7 +51,6 @@ export const HirerStep = (props) => {
         faxinar: false,
         lavar: false,
         passar: false,
-        cozinhar: false,
       },
     ],
   });
@@ -96,7 +95,6 @@ export const HirerStep = (props) => {
               agendamento["faxinar"],
               agendamento["lavar"],
               agendamento["passar"],
-              agendamento["cozinhar"],
             ].filter(Boolean).length === 0
           ) {
             schedules = false;
@@ -120,7 +118,6 @@ export const HirerStep = (props) => {
               agendamento["faxinar"],
               agendamento["lavar"],
               agendamento["passar"],
-              agendamento["cozinhar"],
             ].filter(Boolean).length === 0
           ) {
             schedules = false;
@@ -158,22 +155,22 @@ export const HirerStep = (props) => {
           faxinar: agendamento.faxinar,
           lavar: agendamento.lavar,
           passar: agendamento.passar,
-          cozinhar: agendamento.cozinhar,
         })
       );
-      props.addHirer({
-        ...props.user,
-        enderecos: [
-          {
-            ...props.user.enderecos[0],
-            tipoDeHabitacao: state.tipoDeHabitacao,
-            numeroDeComodos: state.numeroDeComodos,
-            numerodeMoradores: state.numeroDeMoradores,
-          },
-        ],
-        agendamentos: agendamentosArray,
-      });
-      props.nextStep();
+      props
+        .addHirer({
+          ...props.user,
+          enderecos: [
+            {
+              ...props.user.enderecos[0],
+              tipoDeHabitacao: state.tipoDeHabitacao,
+              numeroDeComodos: state.numeroDeComodos,
+              numeroDeMoradores: state.numeroDeMoradores,
+            },
+          ],
+          agendamentos: agendamentosArray,
+        })
+        .then(() => props.nextStep());
     }
   };
 
@@ -341,7 +338,7 @@ export const HirerStep = (props) => {
                 style={{ minWidth: 70 }}
                 className={classes.input}
               >
-                {[6, 7, 8, 9, 10, 11, 12, 13, 14, 15].map((h, i) => (
+                {[6, 7, 8, 9, 10, 11, 12, 13, 14].map((h, i) => (
                   <MenuItem key={i} value={h}>
                     {h}
                   </MenuItem>
@@ -380,7 +377,6 @@ export const HirerStep = (props) => {
                         faxinar: false,
                         lavar: false,
                         passar: false,
-                        cozinhar: false,
                       });
                       setState({ ...temporaryState });
                     }}
@@ -415,7 +411,6 @@ export const HirerStep = (props) => {
                     state.agendamentos[index].faxinar,
                     state.agendamentos[index].lavar,
                     state.agendamentos[index].passar,
-                    state.agendamentos[index].cozinhar,
                   ].filter(Boolean).length > 2
                 }
                 component={"fieldset"}
@@ -452,23 +447,12 @@ export const HirerStep = (props) => {
                     }
                     label={"passar roupas"}
                   />
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={state.agendamentos[index].cozinhar}
-                        onChange={(e) => onScheduleChange(e, index)}
-                        name={"cozinhar"}
-                      />
-                    }
-                    label={"cozinhar"}
-                  />
                 </FormGroup>
                 <FormHelperText>
                   {[
                     state.agendamentos[index].faxinar,
                     state.agendamentos[index].lavar,
                     state.agendamentos[index].passar,
-                    state.agendamentos[index].cozinhar,
                   ].filter(Boolean).length > 2 &&
                     "Você está contratando uma diária de 8hrs de serviço. O tempo pode não ser suficiente para atender a todas as demandas. Oriente a diarista sobre as prioridades."}
                 </FormHelperText>

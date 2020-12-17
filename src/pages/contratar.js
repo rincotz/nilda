@@ -14,6 +14,7 @@ import PhoneStep from "../PhoneStep";
 import PersonalInfoStep from "../PersonalInfoStep";
 import ProfilePic from "../ProfilePicStep";
 import AddressStep from "../AddressStep";
+import FindWorkers from "../FindWorkers";
 import { makeStyles } from "@material-ui/core/styles";
 import MobileStepper from "@material-ui/core/MobileStepper";
 import Button from "@material-ui/core/Button";
@@ -41,6 +42,7 @@ export const ContratarForm = (props) => {
     <ProfilePic atividade={"contratante"} {...props} />,
     <AddressStep atividade={"contratante"} {...props} />,
     <HirerStep atividade={"contratante"} {...props} />,
+    <FindWorkers atividade={"contratante"} {...props} />,
     <PaymentStep atividade={"contratante"} {...props} />,
   ];
   const nextButton = (
@@ -89,8 +91,7 @@ const mapDispatchToProps = (dispatch) => ({
   addPic: (userObject) => dispatch(addPic(userObject)),
   addGeopoint: (userObject) => dispatch(addGeopoint(userObject)),
   addHirer: (userObject) => dispatch(addHirer(userObject)),
-  aceitarDiarista: (serviceInfo, worker) =>
-    dispatch(aceitarDiarista(serviceInfo, worker)),
+  aceitarDiarista: (worker, index) => dispatch(aceitarDiarista(worker, index)),
 });
 
 const mapStateToProps = (state) => ({

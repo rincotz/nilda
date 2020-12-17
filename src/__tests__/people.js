@@ -33,6 +33,7 @@ export const hirer = {
   senha: "Felipe@0",
   agendamentos: [
     {
+      sid: "E1hGLMco8eS7X0F6wwiF",
       horaAgendada: "10",
       minAgendado: "00",
       diaAgendado: "ter",
