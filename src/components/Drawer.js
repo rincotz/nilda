@@ -19,8 +19,8 @@ import SvgIcon from "@material-ui/core/SvgIcon";
 
 const useStyles = makeStyles((theme) => ({
   large: {
-    width: theme.spacing(7),
-    height: theme.spacing(7),
+    width: theme.spacing(9),
+    height: theme.spacing(9),
   },
 }));
 
@@ -29,6 +29,8 @@ export default ({ user }) => {
   const atividade = user.displayName ? user.displayName.split(" ")[0] : "";
   const classes = useStyles();
   const [open, setOpen] = useState(false);
+  const capitalizeFirstLetter = (str) =>
+    `${str.slice(0, 1).toUpperCase()}${str.slice(1)}`;
   return (
     <Box display={user.uid ? "" : "none"}>
       <IconButton
@@ -53,7 +55,7 @@ export default ({ user }) => {
               </ListItemAvatar>
             </ListItem>
             <ListItem>
-              <ListItemText primary={user.displayName ? nome : "Visitante"} />
+              <ListItemText primary={capitalizeFirstLetter(nome)} />
             </ListItem>
           </List>
           <Divider />
@@ -64,7 +66,11 @@ export default ({ user }) => {
               </ListItemIcon>
               <ListItemText primary={"Atualizar Cadastro"} />
             </ListItem>
-            <ListItem button component={Link} to={"/diarias"}>
+            <ListItem
+              button
+              component={Link}
+              to={user.atividade === "diarista" ? "/diarias" : "/contratacoes"}
+            >
               <ListItemIcon>
                 <SvgIcon color={"primary"}>
                   <path

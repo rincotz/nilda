@@ -22,12 +22,16 @@ export default (props) => {
       <Box fontSize={"h4.fontSize"} mt={3} textAlign={"center"}>
         {props.title}
       </Box>
-      <Box fontSize={"body.fontSize"} mt={1} mb={3} textAlign={"center"}>
-        {props.text}
-      </Box>
-      <Box mb={3}>
-        <Avatar className={classes.avatar}>{props.icon}</Avatar>
-      </Box>
+      {props.text && (
+        <Box fontSize={"body.fontSize"} mt={1} mb={3} textAlign={"center"}>
+          {props.text}
+        </Box>
+      )}
+      {props.icon && (
+        <Box mb={3}>
+          <Avatar className={classes.avatar}>{props.icon}</Avatar>
+        </Box>
+      )}
     </Box>
   );
 };

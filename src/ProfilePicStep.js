@@ -68,7 +68,7 @@ export const ProfilePicStep = (props) => {
           if (foto) {
             props.addPic({
               ...props.user,
-              pessoais: { ...props.user.pessoais, foto: foto },
+              foto,
             });
           }
         }}

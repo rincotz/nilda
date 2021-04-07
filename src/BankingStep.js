@@ -67,12 +67,10 @@ export const BankingStep = (props) => {
     if (formComplete) {
       props.addWorker({
         ...props.user,
-        bancarios: {
-          banco: state.banco,
-          agencia: normalizeData(state.agencia),
-          tipoDeConta: state.tipoDeConta,
-          conta: normalizeData(state.conta),
-        },
+        banco: state.banco,
+        agencia: normalizeData(state.agencia),
+        tipoDeConta: state.tipoDeConta,
+        conta: normalizeData(state.conta),
       });
     }
     props.nextStep();

@@ -8,6 +8,7 @@ import {
   addGeopoint,
   addHirer,
   aceitarDiarista,
+  getWorkers,
 } from "../actions";
 import WelcomeHirer from "./welcomeHirer";
 import PhoneStep from "../PhoneStep";
@@ -91,6 +92,8 @@ const mapDispatchToProps = (dispatch) => ({
   addPic: (userObject) => dispatch(addPic(userObject)),
   addGeopoint: (userObject) => dispatch(addGeopoint(userObject)),
   addHirer: (userObject) => dispatch(addHirer(userObject)),
+  getWorkers: (dia, diariasEm4Semanas) =>
+    dispatch(getWorkers(dia, diariasEm4Semanas)),
   aceitarDiarista: (worker, index) => dispatch(aceitarDiarista(worker, index)),
 });
 

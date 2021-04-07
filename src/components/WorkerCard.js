@@ -8,6 +8,8 @@ import LaundryIcon from "@material-ui/icons/LocalLaundryService";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import moment from "moment";
 
+moment.locale("br");
+
 const useStyles = makeStyles((theme) => ({
   foto: {
     width: theme.spacing(14),
@@ -30,8 +32,8 @@ export default (props) => {
     <Box boxShadow={2} display={"flex"}>
       <CardMedia
         className={classes.foto}
-        image={worker.pessoais.foto || ""}
-        title={worker.pessoais.nome}
+        image={worker.foto || ""}
+        title={worker.nome}
       />
       <Box
         m={2}
@@ -41,11 +43,11 @@ export default (props) => {
         flexGrow={1}
       >
         <Box fontSize={"h6.fontSize"}>
-          {firstName(capitalizeFirstLetter(worker.pessoais.nome))},{" "}
-          {getAge(worker.pessoais.nascimentoDDMMAAAA)}
+          {firstName(capitalizeFirstLetter(worker.nome))},{" "}
+          {getAge(worker.nascimentoDDMMAAAA)}
         </Box>
         <Box display={"flex"}>
-          {worker.profissionais.faxinar && (
+          {worker.faxinar && (
             <SvgIcon
               className={classes.icon}
               aria-label={"faxina"}
@@ -58,14 +60,14 @@ export default (props) => {
               />
             </SvgIcon>
           )}
-          {worker.profissionais.lavarRoupas && (
+          {worker.lavarRoupas && (
             <LaundryIcon
               className={classes.icon}
               aria-label={"lava roupas"}
               titleAccess={"lava roupas"}
             />
           )}
-          {worker.profissionais.passarRoupas && (
+          {worker.passarRoupas && (
             <SvgIcon
               className={classes.icon}
               aria-label={"passa roupas"}

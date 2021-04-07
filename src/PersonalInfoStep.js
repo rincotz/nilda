@@ -62,16 +62,10 @@ export const PersonalInfoStep = (props) => {
     if (formComplete) {
       props.stageUser({
         ...props.user,
-        pessoais: {
-          ...props.user.pessoais,
-          nome: state.nome.toLowerCase(),
-          genero: state.genero,
-          nascimentoDDMMAAAA: normalizeData(state.nascimentoDDMMAAAA),
-          meioDeContatoPreferido: state.meioDeContatoPreferido,
-          cpf: normalizeData(state.cpf),
-          email: state.email,
-        },
-        senha: state.senha,
+        ...state,
+        nome: state.nome.toLowerCase(),
+        nascimentoDDMMAAAA: normalizeData(state.nascimentoDDMMAAAA),
+        cpf: normalizeData(state.cpf),
       });
       props.nextStep();
     }

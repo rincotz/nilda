@@ -29,9 +29,7 @@ export const PhoneStep = (props) => {
                   props.nextStep();
                   props.stageUser({
                     uid: authResult.user.uid,
-                    pessoais: {
-                      telefone: authResult.user.phoneNumber,
-                    },
+                    telefone: authResult.user.phoneNumber,
                     atividade: props.atividade,
                   });
                 }

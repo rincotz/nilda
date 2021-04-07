@@ -51,8 +51,10 @@ export default (props) => {
         <Box mx={"auto"}>
           {servicos.map((servico) => (
             <Box my={1} key={servico.sid}>
-              <ServiceCard service={servico} />
-              {console.log(servico)}
+              <ServiceCard
+                service={servico}
+                aceitarServico={(service) => props.aceitarServico(service)}
+              />
             </Box>
           ))}
         </Box>

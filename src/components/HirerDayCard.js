@@ -38,11 +38,12 @@ export default (props) => {
         {loading ? (
           <CircularProgress color={"primary"} />
         ) : workers.length > 0 ? (
-          workers.map((worker) => (
+          workers.map((worker, index) => (
             <Box my={1} key={`${props.agendamento.sid}${worker.uid}`}>
               <WorkerCard
                 worker={worker}
                 distance={worker.distance}
+                index={index}
                 {...props}
               />
             </Box>

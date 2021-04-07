@@ -2,6 +2,8 @@ import { isValid as isValidCpf } from "@fnando/cpf";
 import { isValid as isValidCnpj } from "@fnando/cnpj";
 import moment from "moment";
 
+moment.locale("br");
+
 export default {
   nome: (value) =>
     value === "" || /^[A-zÀ-ÿ']+\s([A-zÀ-ÿ']\s?)*[A-zÀ-ÿ']+$/.test(value)

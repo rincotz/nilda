@@ -11,7 +11,7 @@ export const WaitingStep = (props) => (
       <FormIntro
         title={"Fim"}
         text={`Obrigado, isso é tudo o que precisávamos.
-        Assim que estiver tudo pronto enviaremos uma mensagem de ${props.user.pessoais.meioDeContatoPreferido} e você terá acesso a novos trabalhos.`}
+        Assim que estiver tudo pronto enviaremos uma mensagem de ${props.user.meioDeContatoPreferido} e você terá acesso a novos trabalhos.`}
         icon={<EventIcon style={{ fontSize: 45, margin: "auto" }} />}
       />
     </Box>

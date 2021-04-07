@@ -1,4 +1,5 @@
 import React from "react";
+import { connect } from "react-redux";
 import Box from "@material-ui/core/Box";
 import Grid from "@material-ui/core/Grid";
 import Navbar from "../components/Navbar";
@@ -14,7 +15,7 @@ const useStyles = makeStyles({
   image: { width: "100%" },
 });
 
-const Mais = () => {
+export const Mais = ({ atividade }) => {
   const classes = useStyles();
   return (
     <Box
@@ -25,7 +26,6 @@ const Mais = () => {
       p={4}
       bgcolor={"background.paper"}
     >
-      <Navbar />
       <Box mb={4} width={1}>
         <NildaLogo subtitle={false} />
       </Box>
@@ -83,7 +83,7 @@ const Mais = () => {
           </Typography>
         </Box>
         <Box width={1} mt={3}>
-          <RegisterButtons />
+          <RegisterButtons logged={atividade ? atividade : false} />
         </Box>
       </Box>
       <Box display={{ xs: "none", sm: "block" }}>
@@ -136,7 +136,7 @@ const Mais = () => {
             </Typography>
           </Grid>
           <Grid item xs={12} sm={12} md={6}>
-            <RegisterButtons />
+            <RegisterButtons logged={atividade ? atividade : false} />
           </Grid>
         </Grid>
       </Box>
@@ -144,4 +144,6 @@ const Mais = () => {
   );
 };
 
-export default Mais;
+const mapStateToProps = ({ user }) => ({ user });
+
+export default connect(mapStateToProps)(Mais);

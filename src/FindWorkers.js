@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import DayCard from "./components/HirerDayCard";
-import { getWorkers } from "./actions";
 import Box from "@material-ui/core/Box";
 
 export default (props) => {
@@ -24,7 +23,7 @@ export default (props) => {
           agendamento={agendamento}
           aceitarDiarista={props.aceitarDiarista}
           agendamentoCompleto={(i) => agendamentoCompleto(i)}
-          getWorkers={getWorkers}
+          getWorkers={props.getWorkers}
           key={agendamento.sid}
         />
       ))}

@@ -17,6 +17,8 @@ import moment from "moment";
 import LocationIcon from "@material-ui/icons/Room";
 import Typography from "@material-ui/core/Typography";
 
+moment.locale("br");
+
 const useStyles = makeStyles((theme) => ({
   foto: {
     width: "5.5rem",
@@ -99,8 +101,8 @@ export default (props) => {
     >
       <CardMedia
         className={classes.foto}
-        image={service.contratante.foto || ""}
-        title={service.contratante.nome}
+        image={service.foto || ""}
+        title={service.nome}
       />
       <Box display={"flex"} flexGrow={1}>
         <Box
@@ -111,8 +113,8 @@ export default (props) => {
           my={1}
         >
           <Typography variant={"subtitle1"}>
-            {firstName(capitalizeFirstLetter(service.contratante.nome))},{" "}
-            {getAge(service.contratante.nascimentoDDMMAAAA)}
+            {firstName(capitalizeFirstLetter(service.nome))},{" "}
+            {getAge(service.nascimentoDDMMAAAA)}
           </Typography>
           <Box display={"flex"} alignItems={"center"}>
             <LocationIcon fontSize={"small"} className={classes.icon} />
@@ -137,7 +139,7 @@ export default (props) => {
               aria-label={"faxinar"}
               titleAccess={"faxinar"}
               fontSize={"small"}
-              color={service.faxinar ? "" : "disabled"}
+              color={service.faxinar ? "inherit" : "disabled"}
             >
               <path
                 d={
@@ -150,14 +152,14 @@ export default (props) => {
               aria-label={"lavar roupas"}
               titleAccess={"lavar roupas"}
               fontSize={"small"}
-              color={service.lavarRoupas ? "" : "disabled"}
+              color={service.lavarRoupas ? "inherit" : "disabled"}
             />
             <SvgIcon
               className={classes.icon}
               aria-label={"passar roupas"}
               titleAccess={"passar roupas"}
               fontSize={"small"}
-              color={service.passarRoupas ? "" : "disabled"}
+              color={service.passarRoupas ? "inherit" : "disabled"}
             >
               <path
                 d={
@@ -186,13 +188,13 @@ export default (props) => {
           <Box display={"flex"} alignItems={"center"}>
             <FaceIcon fontSize={"small"} className={classes.icon} />
             <Typography variant={"body2"}>
-              {`${service.endereco.numeroDeMoradores} moradores`}
+              {`${service.numeroDeMoradores} moradores`}
             </Typography>
           </Box>
           <Box display={"flex"} alignItems={"center"}>
-            {getIcon(service.endereco.tipoDeHabitacao)}
+            {getIcon(service.tipoDeHabitacao)}
             <Typography variant={"body2"}>
-              {`${service.endereco.numeroDeComodos} cômodos`}
+              {`${service.numeroDeComodos} cômodos`}
             </Typography>
           </Box>
           <Box display={{ xs: "none", md: "flex" }} alignItems={"center"}>
@@ -220,7 +222,11 @@ export default (props) => {
           <Typography variant={"body2"} className={classes.distance}>
             {service.distance.toPrecision(2)}km
           </Typography>
-          <IconButton aria-label={"aceitar serviço"} color={"secondary"}>
+          <IconButton
+            aria-label={"aceitar serviço"}
+            color={"secondary"}
+            onClick={() => props.aceitarServico(service)}
+          >
             <CheckIcon />
           </IconButton>
         </Box>
@@ -282,13 +288,13 @@ export default (props) => {
             <Box display={"flex"} alignItems={"center"}>
               <FaceIcon fontSize={"small"} className={classes.icon} />
               <Typography variant={"body2"}>
-                {`${service.endereco.numeroDeMoradores} moradores`}
+                {`${service.numeroDeMoradores} moradores`}
               </Typography>
             </Box>
             <Box display={"flex"} alignItems={"center"}>
-              {getIcon(service.endereco.tipoDeHabitacao)}
+              {getIcon(service.tipoDeHabitacao)}
               <Typography variant={"body2"}>
-                {`${service.endereco.numeroDeComodos} cômodos`}
+                {`${service.numeroDeComodos} cômodos`}
               </Typography>
             </Box>
             <Box display={"flex"} alignItems={"center"}>

@@ -22,7 +22,6 @@ export const MeiStep = (props) => {
     faxinar: false,
     lavarRoupas: false,
     passarRoupas: false,
-    cozinhar: false,
     diasOcup: [false, false, false, false, false, false, false],
     diasLivres: [false, false, false, false, false, false, false],
     diasFolga: [false, false, false, false, false, false, false],
@@ -34,8 +33,7 @@ export const MeiStep = (props) => {
     e.target.type === "checkbox"
       ? setState({ ...state, [e.target.name]: e.target.checked })
       : setState({ ...state, [e.target.name]: e.target.value });
-  const servicos =
-    state.faxinar || state.lavarRoupas || state.passarRoupas || state.cozinhar;
+  const servicos = state.faxinar || state.lavarRoupas || state.passarRoupas;
   const formComplete =
     state.verificador.filter(Boolean).length === 7 &&
     state.cnpj &&
@@ -50,21 +48,16 @@ export const MeiStep = (props) => {
     if (formComplete) {
       props.stageUser({
         ...props.user,
-        beneficios: {
-          ferias: state.ferias,
-          decT: state.decT,
-          planoSaude: state.planoSaude,
-        },
-        profissionais: {
-          cnpj: normalizeData(state.cnpj),
-          diasLivres: state.diasLivres,
-          diasOcup: state.diasOcup,
-          diasFolga: state.diasFolga,
-          faxinar: state.faxinar,
-          lavarRoupas: state.lavarRoupas,
-          passarRoupas: state.passarRoupas,
-          cozinhar: state.cozinhar,
-        },
+        ferias: state.ferias,
+        decT: state.decT,
+        planoSaude: state.planoSaude,
+        cnpj: normalizeData(state.cnpj),
+        diasLivres: state.diasLivres,
+        diasOcup: state.diasOcup,
+        diasFolga: state.diasFolga,
+        faxinar: state.faxinar,
+        lavarRoupas: state.lavarRoupas,
+        passarRoupas: state.passarRoupas,
       });
       props.nextStep();
     }
@@ -168,16 +161,6 @@ export const MeiStep = (props) => {
                   checked={state.passarRoupas}
                   onChange={(e) => onChange(e)}
                   name="passarRoupas"
-                />
-              }
-            />
-            <FormControlLabel
-              label="cozinhar"
-              control={
-                <Checkbox
-                  checked={state.cozinhar}
-                  onChange={(e) => onChange(e)}
-                  name="cozinhar"
                 />
               }
             />

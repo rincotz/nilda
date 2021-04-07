@@ -1,45 +1,39 @@
 import React, { Fragment, useState } from "react";
-import FormIntro from "./components/FormIntro";
-import TextField from "@material-ui/core/TextField";
-import MenuItem from "@material-ui/core/MenuItem";
-import Button from "@material-ui/core/Button";
-import Tooltip from "@material-ui/core/Tooltip";
-import IconButton from "@material-ui/core/IconButton";
+import makeStyles from "@material-ui/core/styles/makeStyles";
 import Box from "@material-ui/core/Box";
+import FormIntro from "./components/FormIntro";
+import HomeWorkIcon from "@material-ui/icons/HomeWork";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import RadioGroup from "@material-ui/core/RadioGroup";
-import Radio from "@material-ui/core/Radio";
-import FormControl from "@material-ui/core/FormControl";
-import FormGroup from "@material-ui/core/FormGroup";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import FormLabel from "@material-ui/core/FormLabel";
-import FormHelperText from "@material-ui/core/FormHelperText";
-import Checkbox from "@material-ui/core/Checkbox";
-import makeStyles from "@material-ui/core/styles/makeStyles";
+import TextField from "@material-ui/core/TextField";
+import MenuItem from "@material-ui/core/MenuItem";
 import validator from "./validator";
-import HomeWorkIcon from "@material-ui/icons/HomeWork";
+import FormControl from "@material-ui/core/FormControl";
+import FormLabel from "@material-ui/core/FormLabel";
+import RadioGroup from "@material-ui/core/RadioGroup";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Radio from "@material-ui/core/Radio";
+import ListItemText from "@material-ui/core/ListItemText";
+import Tooltip from "@material-ui/core/Tooltip";
+import IconButton from "@material-ui/core/IconButton";
 import AddCircleIcon from "@material-ui/icons/AddCircle";
 import RemoveCircleIcon from "@material-ui/icons/RemoveCircle";
+import FormGroup from "@material-ui/core/FormGroup";
+import Checkbox from "@material-ui/core/Checkbox";
+import FormHelperText from "@material-ui/core/FormHelperText";
+import Button from "@material-ui/core/Button";
 
 const useStyles = makeStyles((theme) => ({
-  input: {
-    marginRight: theme.spacing(1),
-  },
-  divider: {
-    marginTop: theme.spacing(1),
-    marginBottom: theme.spacing(1),
+  root: {
+    maxWidth: "100%",
+    flexGrow: 1,
+    backGroundColor: theme.palette.paper,
   },
 }));
 
-export const HirerStep = (props) => {
+export default (props) => {
   const classes = useStyles();
   const [state, setState] = useState({
-    tipoDeHabitacao: props.user.tipoDeHabitacao || "",
-    numeroDeComodos: props.user.numeroDeComodos || "",
-    numeroDeMoradores: props.user.numeroDeMoradores || "",
-    cadastrarDiarista: "",
     agendamentos: [
       {
         horaAgendada: "",
@@ -54,9 +48,12 @@ export const HirerStep = (props) => {
       },
     ],
   });
+
   const semana = ["seg", "ter", "qua", "qui", "sex", "sab", "dom"];
+
   const onChange = (e) =>
     setState({ ...state, [e.target.name]: e.target.value });
+
   const onScheduleChange = (e, index) => {
     const temporaryObject = {
       ...state.agendamentos[index],
@@ -68,6 +65,7 @@ export const HirerStep = (props) => {
     const temporaryState = { ...state, agendamentos: [...temporaryArray] };
     setState({ ...temporaryState });
   };
+
   const verifySchedules = () => {
     var schedules = true;
     !!state.cadastrarDiarista
@@ -125,18 +123,15 @@ export const HirerStep = (props) => {
         });
     return schedules;
   };
-  const formComplete =
-    state.tipoDeHabitacao &&
-    state.numeroDeComodos > 0 &&
-    state.numeroDeMoradores > 0 &&
-    verifySchedules();
+
   const normalizeData = (data) =>
     data
       .normalize("NFD")
       .replace(/([^0-9a-zA-Z\s])/g, "")
       .toLowerCase();
+
   const send = () => {
-    if (formComplete) {
+    if (verifySchedules()) {
       const agendamentosArray = [];
       state.agendamentos.map((agendamento) =>
         agendamentosArray.push({
@@ -157,20 +152,7 @@ export const HirerStep = (props) => {
           passarRoupas: agendamento.passarRoupas,
         })
       );
-      props
-        .addHirer({
-          ...props.user,
-          enderecos: [
-            {
-              ...props.user.enderecos[0],
-              tipoDeHabitacao: state.tipoDeHabitacao,
-              numeroDeComodos: state.numeroDeComodos,
-              numeroDeMoradores: state.numeroDeMoradores,
-            },
-          ],
-          agendamentos: agendamentosArray,
-        })
-        .then(() => props.nextStep());
+      props.cadastroServicos(agendamentosArray).then(() => props.nextStep());
     }
   };
 
@@ -179,51 +161,9 @@ export const HirerStep = (props) => {
       <FormIntro
         icon={<HomeWorkIcon style={{ fontSize: "40px" }} />}
         title={"Serviço"}
-        text={"Nos conte um pouco de sua casa e de que você precisa"}
+        text={"Nos conte um pouco de que você precisa"}
       />
       <List component={"form"}>
-        <ListItem>
-          <TextField
-            select
-            variant="outlined"
-            onChange={(e) => onChange(e)}
-            name="tipoDeHabitacao"
-            label="tipo"
-            value={state.tipoDeHabitacao || ""}
-            style={{ minWidth: 210 }}
-          >
-            <MenuItem disabled value="">
-              Selecione uma opção:
-            </MenuItem>
-            <MenuItem value="apartamento">apartamento</MenuItem>
-            <MenuItem value="casa">casa</MenuItem>
-            <MenuItem value="comercial">comercial</MenuItem>
-          </TextField>
-        </ListItem>
-        <ListItem>
-          <TextField
-            error={!!validator.comodos(state.numeroDeComodos)}
-            helperText={validator.comodos(state.numeroDeComodos)}
-            variant="outlined"
-            type="number"
-            onChange={(e) => onChange(e)}
-            name="numeroDeComodos"
-            label="nº de cômodos"
-            value={state.numeroDeComodos || ""}
-          />
-        </ListItem>
-        <ListItem>
-          <TextField
-            error={!!validator.comodos(state.numeroDeMoradores)}
-            helperText={validator.comodos(state.numeroDeMoradores)}
-            variant="outlined"
-            type="number"
-            onChange={(e) => onChange(e)}
-            name="numeroDeMoradores"
-            label="nº de moradores"
-            value={state.numeroDeMoradores || ""}
-          />
-        </ListItem>
         <ListItem>
           <FormControl component={"fieldset"}>
             <FormLabel component={"legend"}>
@@ -462,7 +402,7 @@ export const HirerStep = (props) => {
         ))}
       </List>
       <Button
-        disabled={!formComplete}
+        disabled={!verifySchedules()}
         variant="contained"
         color={"primary"}
         onClick={() => send()}
@@ -472,31 +412,3 @@ export const HirerStep = (props) => {
     </Box>
   );
 };
-
-// HirerStep.propTypes = {
-//   previousStep: PropTypes.func.isRequired,
-//   nextStep: PropTypes.func.isRequired,
-//   stageUser: PropTypes.func.isRequired,
-//   addHirer: PropTypes.func.isRequired,
-//   user: PropTypes.exact({
-//     uid: PropTypes.string.isRequired,
-//     telefone: PropTypes.string.isRequired,
-//     atividade: PropTypes.string.isRequired,
-//     nome: PropTypes.string.isRequired,
-//     genero: PropTypes.string.isRequired,
-//     nascimentoDDMMAAAA: PropTypes.string.isRequired,
-//     cpf: PropTypes.string.isRequired,
-//     email: PropTypes.string.isRequired,
-//     senha: PropTypes.string.isRequired,
-//     foto: PropTypes.string,
-//     rua: PropTypes.string.isRequired,
-//     numero: PropTypes.string.isRequired,
-//     complemento: PropTypes.string,
-//     bairro: PropTypes.string.isRequired,
-//     cep: PropTypes.string.isRequired,
-//     cidade: PropTypes.string.isRequired,
-//     estado: PropTypes.string.isRequired
-//   }).isRequired
-// }
-
-export default HirerStep;

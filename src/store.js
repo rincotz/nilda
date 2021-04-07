@@ -7,9 +7,7 @@ export const initialState = {
   user: {
     uid: "",
     atividade: "",
-    pessoais: {
-      email: "",
-    },
+    email: "",
   },
   step: 0,
   error: "",
@@ -24,16 +22,19 @@ export const userSubscription = (state = initialState, action) => {
     case constants.PREVIOUS_STEP:
       return { ...state, step: state.step - 1 };
     case constants.SET_USER:
-      return {
-        ...state,
-        user: {
-          ...state.user,
-          uid: action.user.uid,
-          atividade: action.user.displayName
-            ? action.user.displayName.split(" ")[0]
-            : "",
-        },
-      };
+      return action.user.email
+        ? {
+            ...state,
+            user: {
+              ...state.user,
+              uid: action.user.uid,
+              atividade: action.user.displayName.split(" ")[0],
+              displayName: action.user.displayName,
+              photoURL: action.user.photoURL,
+              email: action.user.email,
+            },
+          }
+        : { ...state };
     case constants.CLEAN_USER:
       return { ...state, user: initialState.user };
     case constants.STAGE_USER:
