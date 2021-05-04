@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Box from "@material-ui/core/Box";
 import CalendarIcon from "@material-ui/icons/Event";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import ServiceCard from "./ServiceCard";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 
@@ -18,24 +17,9 @@ const useStyles = makeStyles((theme) => ({
 
 export default (props) => {
   const classes = useStyles();
-  const [servicos, setServicos] = useState([]);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const result = await props.procurarServicos(
-        props.dia,
-        props.disponibilidade
-      );
-      setServicos(result);
-    };
-    fetchData().then(() => setLoading(false));
-  }, []);
-
-  return loading ? (
-    <CircularProgress />
-  ) : (
-    servicos.length > 0 && (
+  return (
+    props.servicos.length > 0 && (
       <Box
         className={classes.dayCard}
         boxShadow={3}
@@ -49,11 +33,14 @@ export default (props) => {
           <CalendarIcon style={{ verticalAlign: "middle" }} /> {props.dia}
         </Box>
         <Box mx={"auto"}>
-          {servicos.map((servico) => (
+          {props.servicos.map((servico) => (
             <Box my={1} key={servico.sid}>
               <ServiceCard
                 service={servico}
-                aceitarServico={(service) => props.aceitarServico(service)}
+                aceitarServico={(service) => {
+                  props.aceitarServico(service);
+                  props.setReload();
+                }}
               />
             </Box>
           ))}

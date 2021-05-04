@@ -5,6 +5,7 @@ import Mais from "./pages/mais";
 import ContratarForm from "./pages/contratar";
 import TrabalharForm from "./pages/trabalhar";
 import Diarias from "./pages/diarias";
+import encontrarDiarias from "./pages/encontrarDiarias";
 import NovaDiaria from "./pages/novaDiaria";
 import contratacoes from "./pages/contratacoes";
 import Navbar from "./components/Navbar";
@@ -22,6 +23,7 @@ export default () => (
     <Route path={"/trabalhar"} component={TrabalharForm} />
     <Route path={"/editar"} component={Editar} />
     <Route path={"/diarias"} component={Diarias} />
+    <Route path={"/encontrarDiarias"} component={encontrarDiarias} />
     <Route path={"/contratacoes"} component={contratacoes} />
     <Route path={"/beneficios"} component={Mais} />
     <Route path={"/ocorrencias"} component={Ocorrencias} />

@@ -11,6 +11,7 @@ export const initialState = {
   },
   step: 0,
   error: "",
+  loadingUID: true,
 };
 
 export const userSubscription = (state = initialState, action) => {

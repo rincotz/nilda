@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import moment from "moment";
 import Box from "@material-ui/core/Box";
 import Table from "@material-ui/core/Table";
@@ -21,17 +21,7 @@ import * as regrasNegocio from "../BusinessRules";
 
 moment.locale("br");
 
-export default ({ atividade, serviceQuery }) => {
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const result = await serviceQuery();
-      setUsers(result);
-    };
-    fetchData().then(() => setLoading(false));
-  }, []);
+export default ({ atividade, users, loading }) => {
   const capitalizeFirstLetter = (str) =>
     `${str.slice(0, 1).toUpperCase()}${str.slice(1)}`;
 
