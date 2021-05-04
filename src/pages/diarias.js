@@ -28,11 +28,7 @@ const Diarias = (props) => {
         <CircularProgress />
       ) : (
         <Box>
-          <Table
-            atividade={props.user.atividade}
-            serviceQuery={() => props.serviceQuery()}
-            users={hirers}
-          />
+          <Table atividade={props.user.atividade} users={hirers} />
         </Box>
       )}
     </Box>
