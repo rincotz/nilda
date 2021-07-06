@@ -3,10 +3,10 @@ import { connect } from "react-redux";
 import {
   nextStep,
   previousStep,
-  cadastroServicos,
-  getWorkers,
   aceitarDiarista,
-} from "../actions";
+  getWorkers,
+  cadastroServicos,
+} from "../actions/users";
 import ServiceForm from "../ServiceForm";
 import FindWorkers from "../FindWorkers";
 import makeStyles from "@material-ui/core/styles/makeStyles";

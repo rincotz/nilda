@@ -7,7 +7,7 @@ import {
   addPic,
   addGeopoint,
   addWorker,
-} from "../actions";
+} from "../actions/users";
 import { makeStyles } from "@material-ui/core/styles";
 import MobileStepper from "@material-ui/core/MobileStepper";
 import Button from "@material-ui/core/Button";

@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
-import { serviceQuery } from "../actions";
 import FormIntro from "../components/FormIntro";
 import Box from "@material-ui/core/Box";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Table from "../components/Table";
+import { serviceQuery } from "../actions/users";
 
 const Diarias = (props) => {
   const [hirers, setHirers] = useState([]);

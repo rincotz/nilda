@@ -9,7 +9,7 @@ import {
   addHirer,
   aceitarDiarista,
   getWorkers,
-} from "../actions";
+} from "../actions/users";
 import WelcomeHirer from "./welcomeHirer";
 import PhoneStep from "../PhoneStep";
 import PersonalInfoStep from "../PersonalInfoStep";

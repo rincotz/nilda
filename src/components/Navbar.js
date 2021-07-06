@@ -6,7 +6,7 @@ import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import Login from "../Login";
 import Drawer from "./Drawer";
-import { authenticate, logout } from "../actions";
+import { authenticate, logout } from "../actions/users";
 
 const Navbar = ({ user, logout, authenticate, location }) => {
   const [loginOpen, setLoginOpen] = useState(false);

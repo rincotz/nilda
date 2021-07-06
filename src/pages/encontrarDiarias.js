@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
-import {
-  aceitarServico,
-  mostrarDiariasDisponiveis,
-  procurarServicos,
-} from "../actions";
 import FormIntro from "../components/FormIntro";
 import WorkerDayCard from "../components/WorkerDayCard";
 import Box from "@material-ui/core/Box";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import {
+  aceitarServico,
+  mostrarDiariasDisponiveis,
+  procurarServicos,
+} from "../actions/users";
 
 const EcontrarDiarias = (props) => {
   const [diarias, setDiarias] = useState({});

@@ -27,3 +27,9 @@ export const VENCIMENTO1 = "primeiro_vencimento";
 export const VENCIMENTO2 = "segundo_vencimento";
 
 export const CANCELADO = "cancelado";
+
+// limites de busca
+
+export const raioBusca = 5;
+
+export const limiteResultados = 5;

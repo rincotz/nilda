@@ -1,9 +1,12 @@
 import React from "react";
 import * as firebase from "firebase/app";
 import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth";
+import moment from "moment";
 import Box from "@material-ui/core/Box";
 import FormIntro from "./components/FormIntro";
 import PhoneIphoneIcon from "@material-ui/icons/PhoneIphone";
+
+moment.locale("pt-br");
 
 export const PhoneStep = (props) => {
   const text =
@@ -31,6 +34,7 @@ export const PhoneStep = (props) => {
                     uid: authResult.user.uid,
                     telefone: authResult.user.phoneNumber,
                     atividade: props.atividade,
+                    diaCadastro: moment.startOf("day"),
                   });
                 }
               },
