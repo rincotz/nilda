@@ -1,5 +1,5 @@
 import { authenticate, logout } from "../../actions/auth";
-import { LOGIN, LOGOUT } from "../../constants";
+import { LOGIN, LOGOUT } from "../../actions/constants";
 
 test("should authenticate action object", () => {
   const action = authenticate({

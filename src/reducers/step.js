@@ -1,13 +1,17 @@
-import { PREVIOUS, NEXT, CLEAR } from "../constants";
+import { PREVIOUS, NEXT, CLEAR_STEP, SET_STEP } from "../actions/constants";
 
-export default (state = { step: 0 }, action) => {
+const stepReducerDefaultState = 0;
+
+export default (state = stepReducerDefaultState, action) => {
   switch (action.type) {
     case PREVIOUS:
-      return { step: state.step - 1 };
+      return state - 1;
     case NEXT:
-      return { step: state.step + 1 };
-    case CLEAR:
-      return { step: 0 };
+      return state + 1;
+    case CLEAR_STEP:
+      return 0;
+    case SET_STEP:
+      return action.step;
     default:
       return state;
   }

@@ -1,13 +1,22 @@
 import React from "react";
-import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
+import {
+  createMuiTheme,
+  ThemeProvider,
+  useTheme,
+} from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import AppRouter from "./AppRouter";
 
-const theme = createMuiTheme();
-
 function App() {
+  const defaultTheme = useTheme();
+  const myTheme = createMuiTheme({
+    palette: {
+      background: { default: defaultTheme.palette.background.paper },
+    },
+  });
+
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={myTheme}>
       <CssBaseline />
       <div>
         <AppRouter />

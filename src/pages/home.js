@@ -1,7 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
-import { authenticate, logout } from "../actions/users";
 import Box from "@material-ui/core/Box";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
@@ -23,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const HomePage = (props) => {
+export const HomePage = ({ auth }) => {
   const classes = useStyles();
 
   return (
@@ -43,7 +42,7 @@ export const HomePage = (props) => {
       <Box display={{ xs: "block", md: "none" }}>
         <Grid container alignItems={"center"} justify={"center"}>
           <Grid item xs={12} md={6}>
-            <img src={nilda} className={classes.image} />
+            <img alt={"Nilda Logo"} src={nilda} className={classes.image} />
           </Grid>
           <Grid item xs={12} md={6}>
             <Typography variant={"body1"} align={"center"}>
@@ -70,9 +69,7 @@ export const HomePage = (props) => {
             </Button>
           </Grid>
           <Grid item xs={12}>
-            <RegisterButtons
-              logged={props.user.atividade ? props.user.atividade : false}
-            />
+            <RegisterButtons logged={auth.atividade ? auth.atividade : false} />
           </Grid>
         </Grid>
       </Box>
@@ -83,7 +80,7 @@ export const HomePage = (props) => {
         alignItems={"center"}
       >
         <Box width={1 / 2}>
-          <img src={nilda} className={classes.image} />
+          <img alt={"Nilda Logo"} src={nilda} className={classes.image} />
         </Box>
         <Box width={1 / 2}>
           <Box width={1}>
@@ -111,9 +108,7 @@ export const HomePage = (props) => {
             </Button>
           </Box>
           <Box width={1}>
-            <RegisterButtons
-              logged={props.user.atividade ? props.user.atividade : false}
-            />
+            <RegisterButtons logged={auth.atividade ? auth.atividade : false} />
           </Box>
         </Box>
       </Box>
@@ -121,13 +116,8 @@ export const HomePage = (props) => {
   );
 };
 
-const mapDispatchToProps = (dispatch) => ({
-  logout: () => dispatch(logout()),
-  authenticate: (email, password) => dispatch(authenticate(email, password)),
-});
-
 const mapStateToProps = (state) => ({
-  user: state.user,
+  auth: state.auth,
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(HomePage);
+export default connect(mapStateToProps)(HomePage);

@@ -1,22 +1,32 @@
-import { createStore, combineReducers, applyMiddleware, compose } from "redux";
+import { applyMiddleware, combineReducers, compose, createStore } from "redux";
 import thunk from "redux-thunk";
 import auth from "./reducers/auth";
 import services from "./reducers/services";
 import signIn from "./reducers/signIn";
 import step from "./reducers/step";
-import { setUser } from "./actions/users";
+import { setLoggedUserData, startAuthenticate } from "./actions/auth";
 
 const composeEnhancers =
   (typeof window !== "undefined" &&
     window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) ||
   compose;
 
-const store = () =>
+const enhancer = composeEnhancers(applyMiddleware(thunk));
+
+const configureStore = (initialState) =>
   createStore(
-    combineReducers({ auth, services, signIn, step }),
-    composeEnhancers(applyMiddleware(thunk))
+    combineReducers({
+      auth: auth,
+      services: services,
+      user: signIn,
+      step: step,
+    }),
+    initialState,
+    enhancer
   );
 
-store.dispatch(setUser());
+const store = configureStore();
+
+store.dispatch(startAuthenticate());
 
 export default store;

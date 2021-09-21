@@ -24,15 +24,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default ({ user }) => {
-  const nome = user.displayName ? user.displayName.split(" ")[1] : "";
-  const atividade = user.displayName ? user.displayName.split(" ")[0] : "";
+export default ({ auth }) => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
-  const capitalizeFirstLetter = (str) =>
-    `${str.slice(0, 1).toUpperCase()}${str.slice(1)}`;
+  const { nome, atividade, foto } = auth;
+
   return (
-    <Box display={user.uid ? "" : "none"}>
+    <Box display={!auth.uid && "none"}>
       <IconButton
         onClick={() => setOpen(true)}
         color={"secondary"}
@@ -51,11 +49,11 @@ export default ({ user }) => {
           <List>
             <ListItem>
               <ListItemAvatar>
-                <Avatar className={classes.large} src={user.photoURL} />
+                <Avatar className={classes.large} src={foto} />
               </ListItemAvatar>
             </ListItem>
             <ListItem>
-              <ListItemText primary={capitalizeFirstLetter(nome)} />
+              <ListItemText primary={nome} />
             </ListItem>
           </List>
           <Divider />
@@ -66,11 +64,7 @@ export default ({ user }) => {
               </ListItemIcon>
               <ListItemText primary={"Atualizar Cadastro"} />
             </ListItem>
-            <ListItem
-              button
-              component={Link}
-              to={user.atividade === "diarista" ? "/diarias" : "/contratacoes"}
-            >
+            <ListItem button component={Link} to={"/diarias"}>
               <ListItemIcon>
                 <SvgIcon color={"primary"}>
                   <path

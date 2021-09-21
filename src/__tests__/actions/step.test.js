@@ -1,5 +1,5 @@
 import { previousStep, nextStep, clearStep } from "../../actions/step";
-import { PREVIOUS, NEXT, CLEAR } from "../../constants";
+import { PREVIOUS, NEXT, CLEAR_STEP } from "../../actions/constants";
 
 test("should fire previousStep action object", () => {
   const action = previousStep();
@@ -13,5 +13,5 @@ test("should fire nextStep action object", () => {
 
 test("should fire clearStep action object", () => {
   const action = clearStep();
-  expect(action).toEqual({ type: CLEAR });
+  expect(action).toEqual({ type: CLEAR_STEP });
 });

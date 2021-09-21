@@ -4,16 +4,16 @@ import { Link } from "react-router-dom";
 import Box from "@material-ui/core/Box";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
-import Login from "../Login";
+import Login from "./Login";
 import Drawer from "./Drawer";
-import { authenticate, logout } from "../actions/users";
+import { login, startLogout } from "../actions/auth";
 
-const Navbar = ({ user, logout, authenticate, location }) => {
+const Navbar = ({ auth, logout, login, location }) => {
   const [loginOpen, setLoginOpen] = useState(false);
   return (
-    <Box width={1} display={"flex"} bgcolor={"background.paper"}>
+    <Box width={1} display={"flex"}>
       <Box width={1 / 3}>
-        <Drawer user={user} />
+        <Drawer auth={auth} />
       </Box>
       <Box width={1 / 3} display={"flex"} justifyContent={"center"}>
         {location.pathname !== "/" && (
@@ -29,27 +29,27 @@ const Navbar = ({ user, logout, authenticate, location }) => {
         alignItems={"flex-end"}
       >
         <Button
-          onClick={() => (user.uid ? logout() : setLoginOpen(true))}
+          onClick={() => (auth.uid ? logout() : setLoginOpen(true))}
           color={"secondary"}
         >
-          {user.uid ? "sair" : "entrar"}
+          {auth.uid ? "sair" : "entrar"}
         </Button>
         <Login
           open={loginOpen}
           close={() => setLoginOpen(false)}
-          authenticate={authenticate}
-          user={user}
+          login={login}
+          user={auth}
         />
       </Box>
     </Box>
   );
 };
 
-const mapStateToProps = (state) => ({ user: state.user });
+const mapStateToProps = ({ auth }) => ({ auth });
 
 const mapDispatchToProps = (dispatch) => ({
-  logout: () => dispatch(logout()),
-  authenticate: (email, password) => dispatch(authenticate(email, password)),
+  logout: () => dispatch(startLogout()),
+  login: (email, password) => dispatch(login(email, password)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Navbar);

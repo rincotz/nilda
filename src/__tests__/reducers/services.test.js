@@ -1,16 +1,30 @@
 import servicesReducer from "../../reducers/services";
 import { services } from "../../utils/fixtures";
 import {
+  NEW_SERVICE_INSTANCE,
   DELETE_SERVICE,
   SET_SERVICES,
   CLEAR_SERVICES,
   EDIT_SERVICE,
   STAGE_SERVICE,
-} from "../../constants";
+} from "../../actions/constants";
+import { newServiceInstance } from "../../actions/services";
 
 test("should set default state", () => {
   const state = servicesReducer(undefined, { type: "@@INIT" });
   expect(state).toEqual([]);
+});
+
+test("should add new service instance object to state array", () => {
+  const action = {
+    type: NEW_SERVICE_INSTANCE,
+    service: newServiceInstance().service,
+  };
+  const state = servicesReducer([newServiceInstance().service], action);
+  expect(state).toEqual([
+    newServiceInstance().service,
+    newServiceInstance().service,
+  ]);
 });
 
 test("should remove service by sid", () => {

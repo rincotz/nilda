@@ -1,9 +1,9 @@
-import authReducer from "../../reducers/auth";
-import { LOGIN, LOGOUT } from "../../constants";
+import authReducer, { authReducerDefaultState } from "../../reducers/auth";
+import { LOGIN, LOGOUT } from "../../actions/constants";
 
 test("should set default state", () => {
   const state = authReducer(undefined, { type: "@@INIT" });
-  expect(state).toEqual(null);
+  expect(state).toEqual(authReducerDefaultState);
 });
 
 test("should set auth credentials", () => {
@@ -18,7 +18,7 @@ test("should set auth credentials", () => {
   expect(state).toEqual({
     uid: "asfijoaspy92",
     atividade: "diarista",
-    nome: "diarista nilda maria",
+    nome: "Nilda Maria",
     foto: "someURL",
     email: "nilda@nilda.com.br",
   });
@@ -36,5 +36,5 @@ test("should clear auth credentials", () => {
     },
     action
   );
-  expect(state).toEqual(null);
+  expect(state).toEqual(authReducerDefaultState);
 });

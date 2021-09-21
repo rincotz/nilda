@@ -4,7 +4,7 @@ import Box from "@material-ui/core/Box";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Table from "../components/Table";
 import FormIntro from "../components/FormIntro";
-import { serviceQuery } from "../actions/users";
+import { pesquisaDiarias } from "../actions/services";
 
 export const Contratacoes = ({ user, serviceQuery }) => {
   const [diaristas, setDiaristas] = useState([]);
@@ -36,7 +36,7 @@ export const Contratacoes = ({ user, serviceQuery }) => {
 const mapStateToProps = ({ user }) => ({ user });
 
 const mapDispatchToProps = (dispatch) => ({
-  serviceQuery: () => dispatch(serviceQuery()),
+  serviceQuery: () => dispatch(pesquisaDiarias()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Contratacoes);

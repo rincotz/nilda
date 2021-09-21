@@ -1,17 +1,26 @@
-import { LOGIN, LOGOUT } from "../constants";
+import { LOGIN, LOGOUT } from "../actions/constants";
+import { capitalizeAll } from "../utils/utils";
 
-export default (state = null, action) => {
+export const authReducerDefaultState = {
+  uid: "",
+  atividade: "",
+  nome: "",
+  foto: "",
+  email: "",
+};
+
+export default (state = authReducerDefaultState, action) => {
   switch (action.type) {
     case LOGIN:
       return {
         uid: action.uid,
         atividade: action.displayName.split(" ")[0],
-        nome: action.displayName,
+        nome: capitalizeAll(action.displayName, 1),
         foto: action.photoURL,
         email: action.email,
       };
     case LOGOUT:
-      return null;
+      return authReducerDefaultState;
     default:
       return state;
   }

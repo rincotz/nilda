@@ -1,11 +1,8 @@
-import moment from "moment";
 import { geoponto } from "../firebase";
-
-moment.locale("br");
 
 export const hirer = {
   atividade: "contratante",
-  coordenadas: geoponto(-23.5560666, -46.65556249999999),
+  coordinates: geoponto(-23.5560666, -46.65556249999999),
   cpf: "099.089.498-37",
   email: "marachelles@hotmail.com",
   bairro: "Pinheiros",
@@ -31,12 +28,46 @@ export const hirer = {
 export const worker = {
   atividade: "diarista",
   cnpj: "36.334.352/0001-20",
-  coordenadas: geoponto(-23.5674501, -47.2131158),
+  cnpjVerificado: true,
+  coordinates: geoponto(-23.5560501, -46.6555158),
   cpf: "099.089.498-37",
   decimoTerceiro: true,
-  diasFolga: [false, false, false, false, false, false, false],
-  diasLivres: [true, true, true, true, true, false, false],
-  diasOcup: [false, false, false, false, false, true, true],
+  diasFolga: {
+    seg: false,
+    ter: false,
+    qua: false,
+    qui: false,
+    sex: false,
+    sab: false,
+    dom: false,
+  },
+  diasLivres: {
+    seg: true,
+    ter: true,
+    qua: false,
+    qui: false,
+    sex: false,
+    sab: false,
+    dom: false,
+  },
+  diasOcup: {
+    seg: false,
+    ter: false,
+    qua: false,
+    qui: false,
+    sex: false,
+    sab: false,
+    dom: false,
+  },
+  verificador: {
+    seg: true,
+    ter: true,
+    qua: false,
+    qui: false,
+    sex: false,
+    sab: false,
+    dom: false,
+  },
   email: "marachelles@hotmail.com",
   foto:
     "https://firebasestorage.googleapis.com/v0/b/nilda-6b3b8.appspot.com/o/fotoPerfil%2FZC1R8NdLnlc6FGQlP6rbjlkVavM2?alt=media&token=d293f99b-e55c-4763-88f8-afdedcd55a89",
@@ -47,9 +78,6 @@ export const worker = {
   estado: "SP",
   logradouro: "Rua Peixoto Gomide",
   numero: "250",
-  comodos: 1,
-  moradores: 3,
-  tipo: "apartamento",
   faxinar: true,
   ferias: true,
   genero: "feminino",
@@ -58,7 +86,11 @@ export const worker = {
   nome: "Maria Lúcia da Silva",
   senha: "Mara@0",
   telefone: "+55 (11) 996 508 820",
-  uid: "AyDH6Q4P6RPap50R4nfNDDcl36r2",
+  uid: "GkDH6Q4P6RPap50R4nfNDDcl36r2",
+  banco: "Santander",
+  agencia: "1831-1",
+  tipoDeConta: "corrente",
+  conta: 18140417,
 };
 
 export const services = [
@@ -73,19 +105,21 @@ export const services = [
     passar: false,
     cozinhar: false,
     nomeDiarista: "Maria Aparecida",
-    celularDiarista: "+55 (22) 222 222 222",
+    telefoneDiarista: "+55 (22) 222 222 222",
+    pagamento: {},
   },
   {
     sid: "QNVsl3yafT8LDRNhTpe7",
     horaAgendada: "10",
     minAgendado: "00",
-    diaAgendado: "qui",
+    diaAgendado: "seg",
     numeroDiariasEm4Semanas: 4,
     nomeDiarista: "Maria Aparecida",
-    celularDiarista: "+55 (22) 222 222 222",
+    telefoneDiarista: "+55 (22) 222 222 222",
     faxinar: true,
     lavar: false,
     passar: false,
     cozinhar: false,
+    pagamento: {},
   },
 ];

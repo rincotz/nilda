@@ -21,6 +21,7 @@
 .env.development.local
 .env.test.local
 .env.production.local
+nilda-test-firebase-adminsdk-2i2ur-615ef159cb.json
 
 npm-debug.log*
 yarn-debug.log*
