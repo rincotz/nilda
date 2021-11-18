@@ -53,6 +53,17 @@ export const filterState = (state, filter = []) => {
   return filteredObject;
 };
 
+export const ignoreState = (state, filter = []) => {
+  const filteredObject = {};
+  const keys = Object.keys(state);
+  const filteredKeys = keys.filter((key) => filter.includes(key));
+  filteredKeys.forEach(
+    (filteredKey) => (filteredObject[filteredKey] = state[filteredKey])
+  );
+};
+
+export const filterObject = (state, filter) => {};
+
 export const normalizeData = (data) =>
   data
     .normalize("NFD")

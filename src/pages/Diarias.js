@@ -28,7 +28,7 @@ const Diarias = (props) => {
         <CircularProgress />
       ) : (
         <Box>
-          <Table atividade={props.auth.atividade} services={services} />
+          <Table atividade={props.auth.atividade} serviceswe={services} />
         </Box>
       )}
     </Box>

@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
-import Box from "@material-ui/core/Box";
 import PhotoCameraIcon from "@material-ui/icons/PhotoCamera";
-import CheckIcon from "@material-ui/icons/CheckCircle";
 import Avatar from "@material-ui/core/Avatar";
 import FormN from "../components/FormN";
 import ButtonN from "../components/ButtonN";

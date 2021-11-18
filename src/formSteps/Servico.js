@@ -5,7 +5,6 @@ import validator from "../utils/validator";
 import ButtonN from "../components/ButtonN";
 import FormN from "../components/FormN";
 import makeStyles from "@material-ui/styles/makeStyles";
-import { normalizeData } from "../utils/utils";
 import HomeWorkIcon from "@material-ui/icons/HomeWork";
 import FormLabel from "@material-ui/core/FormLabel";
 import RadioGroup from "@material-ui/core/RadioGroup";

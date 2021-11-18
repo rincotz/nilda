@@ -128,20 +128,7 @@ export default (props) => {
       text="Nos conte um pouco sobre o que você precisa"
       icon={<HomeWorkIcon style={{ fontSize: "40px" }} />}
       buttonLeft={
-        <ButtonN
-          color="secondary"
-          buttonText="voltar"
-          onClick={() => {
-            agendamentos.forEach((agendamento, index) =>
-              props.stageService({
-                ...agendamento,
-                sid: props.services[index].sid,
-              })
-            );
-            props.stageUser(cadastrarDiarista);
-            props.previousStep();
-          }}
-        />
+        <ButtonN color="secondary" buttonText="voltar" disabled={true} />
       }
       buttonRight={
         <ButtonN
